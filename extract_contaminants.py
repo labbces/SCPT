@@ -1,60 +1,66 @@
 #!/usr/bin/env python
 
-####################################################################
-### EXTRACT CONTAMINANTS FROM KAIJU AND CALCULATE THEIR COVERAGE ###
-####################################################################
+###################################################################
+# Extract contaminants from Kaiju and calculates their reads number
+###################################################################
 
-# TO DO:
-# create a argparser for this script
-
+import argparse
 import pandas as pd
 import glob
 import os
 
-###
-# This function concatenates all the kaiju reports into one csv file
-# all_type must be like 'endswith': "*.trimmed.kaiju_speciesSummary.tsv"
-#UPDATE: After the summary from ALL of the kaiju.tsv output from the server, this function is useless
-def concatenate(path_to_tsv, all_type):
-    os.chdir(path_to_tsv)
-    extension = all_type
-    all_filenames = [i for i in glob.glob(extension)]
-    combined_csv = pd.concat([pd.read_csv(f) for f in all_filenames], sort=True)
-    combined_csv.to_csv("all_kaiju_reports.csv", index=False, encoding='utf-8-sig')
-    return(print("As tabelas foram concatenadas no novo arquivo: all_kaiju_reports.csv"))
+################################
+# Command line arguments
+################################
 
-path_to_tsv = "/home/felipe/Documentos/Sugarcane/MyAssembly_Hoang_2017_Illumina/kaiju_reports/"
-# Call to concatenate all *tsv in the path
-##concatenate(path_to_tsv, "*.trimmed.kaiju_speciesSummary.tsv")
-###
+parser = argparse.ArgumentParser(description='Extract contaminants reads number from Kaiju reports (tsv file) ', add_help=True)
+parser.add_argument('-i', '--input', dest='input', metavar='file', help='A .tsv file with Kaiju reports', required=True)
+parser.add_argument('-p', '--percentage', dest='percentage', metavar='int', type=int, help='Contaminant percentage threshold', required=True)
+parser.add_argument('-o', '--output', dest='output', metavar='file', help='Base name for extracted contaminants file',required=True)
 
-###
-# This function creates a new file if the contamination ratio is > than percentage
-# kaiju_tsv = concatenated files ("summary.tsv") // percentage = contamination ratio (int)
+################################
+# Getting arguments
+################################
+
+args = parser.parse_args()
+tsvFile = args.input
+percentage = args.percentage
+output = args.output + ".csv"
+
+################################
+# Extract threshold contaminants
+################################
+
+#This function creates a new file if the contamination ratio is > than percentage
 def extract_contaminants(kaiju_tsv,percentage):
-    print("Extraindo contaminantes com porcentagem de reads acima de", percentage)
-    table = pd.read_csv(kaiju_tsv, sep="\t", skiprows=[0])
+    print("Extracting contaminants with percentage threshold higher than",percentage,"...")
+    table = pd.read_csv(tsvFile, sep="\t", skiprows=[0])
     # Adjusting the table index 
     table.columns = ['%', 'reads', 'species']
     # Converting column '%' into INT or NUMERIC only
     table['%'] = pd.to_numeric(table['%'], errors='coerce')
-    # Creating filters to remove undesirable index
+    # Creating filters for undesirable index
     table_remove = table.loc[(table["species"] == "unclassified") | 
     (table["species"] == "Viruses") |
     (table["species"] == "cannot be assigned to a species ")]
-    # Apply filters into a new DF
+    # Removing the filters 
     filtered_df = table.drop(table_remove.index)
-    # Apply the ratio condition
+    # Apply the threshold condition
     extracted_df = filtered_df.loc[table["%"] > percentage]
     # Creating a new file with extracted lines (applied conditions)
-    return(extracted_df.to_csv("extracted_contaminants.csv", index = False))
+    print("Creating file with extracted contaminants...")
+    print("Extracted contaminants file was created as", output)
+    return(extracted_df.to_csv(output, index = False))
 
-path_to_summary_tsv = "/home/felipe/Documentos/Sugarcane/MyAssembly_Hoang_2017_Illumina/kaiju_reports/summary.tsv"
-##extract_contaminants(path_to_summary_tsv, 1)
-###
+extract_contaminants(tsvFile, percentage)
 
 ###
-os.system("cat extracted_contaminants.csv | awk '{ s+=$2 } END { print s }'")
+#TO DO: 
+# pegar as duas ultimas palavras da coluna species e criar um dicionario vazio; 
+# somar a quantidade de reads com linhas que possuem a mesma especie
+# printar quantidade total de reads pra cada contaminant
+
+#os.system("cat extracted_contaminants.csv | awk '{ s+=$2 } END { print s }'")
 # The total_reads needs to be added manually, the number is the output from the sum of de second column
 # of the extracted_contaminants.csv file
 total_reads = 2454519
@@ -67,5 +73,5 @@ contaminant = "Acinetobacter baumannii"
 def coverage_contaminants(total_reads, reads_lenght, genome_size):
     return((total_reads*2*reads_lenght)/genome_size)
 
-print("The", contaminant, "coverage is: ",coverage_contaminants(total_reads, reads_lenght, genome_size))
+##print("The", contaminant, "coverage is: ",coverage_contaminants(total_reads, reads_lenght, genome_size))
 ###
