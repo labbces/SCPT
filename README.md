@@ -1,2 +1,2 @@
-# SCPT
-SugarCane PanTranscriptome
+# SCPT - SugarCane PanTranscriptome
+
