@@ -12,7 +12,6 @@ and prints the amount of reads for each contaminant
 import argparse
 import pandas as pd
 from pandas import DataFrame as df
-import glob
 import os
 
 ##########################################
