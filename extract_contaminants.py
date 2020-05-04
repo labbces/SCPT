@@ -59,10 +59,10 @@ def extract_contaminants(kaiju_tsv,percentage):
     print("Extracted contaminants file was created as", output + "_contaminants_threshold_p=" + percentage_name + ".csv")
     newfile = extracted_df.to_csv(output + "_contaminants_threshold_p=" + percentage_name + ".csv", index = False)
 
-    # SUPER INTERESTING, THIS IS SUUUUUPER INTERESTING:
-    # A groupby operation involves some combination of splitting the object,
-    # applying a function, and combining the results. This can be used to group 
-    # large amounts of data and compute operations on these groups.
+    ''' SUPER INTERESTING, THIS IS SUUUUUPER INTERESTING:
+    A groupby operation involves some combination of splitting the object,
+    applying a function, and combining the results. This can be used to group 
+    large amounts of data and compute operations on these groups. '''
 
     # Creating a dictionary and calculate the amount of reads per contaminant in one line :O
     counting_contaminant_reads = extracted_df["reads"].groupby(extracted_df["species"]).apply(sum).to_dict()
