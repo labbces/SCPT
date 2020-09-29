@@ -1,0 +1,53 @@
+software:
+        #Absolute path
+        sratoolkit: Storage/progs/sratoolkit.2.9.6-centos_linux64/bin/fastq-dump        
+        fastqc: Storage/progs/FastQC/fastqc
+        multiqc: Storage/progs/miniconda2/bin/multiqc
+        bbduk: Storage/progs/bbmap_35.85/bbduk2.sh
+        kaiju: /Storage/progs/kaiju-v1.7.2-linux-x86_64-static/bin/kaiju
+        trinity: Storage/progs/trinityrnaseq-Trinity-v2.8.5/Trinity
+        busco: Storage/progs/BUSCO3/scripts/run_BUSCO.py
+        transrate: Storage/progs/transrate-1.0.3-linux-x86_64/transrate
+        
+directories:
+        #output path
+        outdir: /Storage/data1/felipe.peres/Sugarcane/snakemake/clone/dntap/outdir
+
+data_type:
+    # You must specify either 'pe' or 'se' depending on the use of paired-end 
+    # files of single-end file respectively.
+
+    type: pe
+
+samples:
+    # You must provide absolute path to read sample RNA-seq file (.fastq / .fq).
+
+    forward: /Storage/data1/felipe.peres/Sugarcane/snakemake/clone/dntap/outdir/forward/reads.left.fq
+    reverse: /Storage/data1/felipe.peres/Sugarcane/snakemake/clone/dntap/outdir/reverse/reads.right.fq
+    single: none
+
+threads:
+    # You can set maximum threads to be use be each step.
+
+    fastqc: 20
+    bbduk: 6
+    kaiju: 10
+    trinity: 20
+    transrate: 20
+    busco: 10
+
+bbduk_params:
+   minlength=75 rref=/Storage/progs/bbmap_35.85/resources/adapters.fa fref=/Storage/progs/sortmerna-2.1b/rRNA_databases/rfam-5.8s-database-id98.fasta,/Storage/progs/sortmerna-2.1b/rRNA_databases/silva-bac-16s-id90.fasta,/Storage/progs/sortmerna-2.1b/rRNA_databases/rfam-5s-database-id98.fasta,/Storage/progs/sortmerna-2.1b/rRNA_databases/silva-bac-23s-id98.fasta,/Storage/progs/sortmerna-2.1b/rRNA_databases/silva-arc-16s-id95.fasta,/Storage/progs/sortmerna-2.1b/rRNA_databases/silva-euk-18s-id95.fasta,/Storage/progs/sortmerna-2.1b/rRNA_databases/silva-arc-23s-id98.fasta,/Storage/progs/sortmerna-2.1b/rRNA_databases/silva-euk-28s-id98.fasta qtrim=w trimq=30 tpe tbo 
+    
+trinity_params:
+    lib_type: RF
+    max_memory: 100G
+    min_contig_length: 200
+    KMER_SIZE: 31 
+
+transrate_params:
+    reference: /Storage/data1/felipe.peres/Sugarcane/rawReads/Hoang_2017_Illumina/ncbi/public/sra/fastqFiles/cleanAdapters+SugarcaneReads_BBduk/transrate_references/Sbicolor_454_v3.1.1.transcript.fa
+
+busco_params:
+    mode: transcriptome
+    database: /Storage/databases/BUSCO_DBs/embryophyta_odb9/
