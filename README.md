@@ -1,5 +1,7 @@
 ### SCPT - SugarCane PanTranscriptome
-
+### ! Under Construction !
+### About
+This repository contains a collection of scripts used to do the "Inference and functional annotation of the sugarcane pantranscriptome". Read more about the project: https://bv.fapesp.br/en/bolsas/190447/inference-and-annotation-of-the-sugarcane-pantranscriptome/
 ![Pan-Transcriptome](/images/CREATIVE.png)
 
 This figure represents the almost complete collection of messenger RNA produced by a specie (Saccharum hybrid cultivar in this study). This collection can be called as pantranscriptome. The pantranscriptome of a specie can allow us to make coss-cultivar comparisons as well as to explore co-expression networks that will in turn aid in the functional annotation of until then transcripts of unknown function.
@@ -9,9 +11,6 @@ Contact information:
 **Prof. Dr. Diego Mauricio Riaño-Pachón:** diego.riano@cena.usp.br  
 
 **Felipe Vaz Peres:** felipe.vzps@gmail.com
-
-### About
-This repository contains a collection of scripts used to do the "Inference and functional annotation of the sugarcane pantranscriptome". Read more about the project: https://bv.fapesp.br/en/bolsas/190447/inference-and-annotation-of-the-sugarcane-pantranscriptome/
 
 ### Data description
 * **MyAssembly_Template**
