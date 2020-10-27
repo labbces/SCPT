@@ -1,5 +1,12 @@
 #!/usr/bin/env python
 
+'''						Description
+			This script removes contaminated sequences from FASTQ files!
+		The user determines the sequences that must be maintained from a Taxonomy Level.
+	if Taxonomy Level = "Viridiplantae": Only descendants from "Viridiplantae" will be maintained.
+'''
+
+import argparse
 import sys
 import os
 from ete3 import NCBITaxa
@@ -7,9 +14,28 @@ from collections import Iterable
 from collections import defaultdict
 from Bio import SeqIO
 
-################################################################### 
-# Ler kaiju file e criar dicionario com sequence ID e taxonomy ID #
-###################################################################
+# Creating arguments
+
+parser = argparse.ArgumentParser(description='Removes contaminated sequences from Taxonomy Level in FASTQ files', add_help=True)
+parser.add_argument('-k', '--kaiju_file', dest='kaiju_file', metavar='file', help='A .kaiju file with kaiju reports', required=True)
+parser.add_argument('-R1', dest='R1_file', metavar='file', help='R1 FASTQ file', required=True)
+parser.add_argument('-R2', dest='R2_file', metavar='file', help='R2 FASTQ file', required=True)
+parser.add_argument('-t', '--taxonomy_level', dest='taxonomy_level', metavar='Tax rank', type=str, help='Only descendants from this Taxonomy Level will be maintained',required=True)
+
+# Getting arguments
+
+args = parser.parse_args()
+kaiju_file = args.kaiju_file
+R1 = args.R1_file
+R2 = args.R2_file
+taxonomy_level = args.taxonomy_level
+
+# Getting taxonomy database and taxonomy level
+
+ncbi = NCBITaxa()
+descendants = ncbi.get_descendant_taxa(taxonomy_level)
+
+# Turn nested iterable into list 
 
 def flatten(items):
 	"""Yield items from any nested iterable.
@@ -23,21 +49,29 @@ def flatten(items):
 		else:
 			yield x
 
-ncbi = NCBITaxa()
-descendants = ncbi.get_descendant_taxa("viridiplantae")
+# Create taxonomy and sequences list
 
-kaiju = "./20_SRR8771430.trimmed.kaiju"
-def create_id_lists(kaiju, direction):
+def create_id_lists(kaiju_file):
 	""" Reading Kaiju file and creating the following lists by each ID:
 	- taxonomy_id (3rd column)
 	- taxonomy (integer)
 	- sequence_id lists (2nd column)
-	Direction must be "1/" or "/2"
 	"""
+	#Checking fastq files direction
+	if "R1" in R1:
+	        direction = "/1"
+        	#print(direction)
+	elif "R2" in R2:
+        	direction = "/2"
+        	#print(direction)
+	else:
+        	print("File {} isn't a R1 or R2 file".format(R1))
+        	exit()
+
 	#Creating empty lists
 	taxonomy_id = []
 	sequence_id = []
-	with open(kaiju, "r") as kaiju_file:
+	with open(kaiju_file, "r") as kaiju_file:
 		for line in kaiju_file: 
 			#Getting taxonomy and sequence ID from Kaiju file
 			taxonomy_id.append(line.split()[2:3])
@@ -52,18 +86,13 @@ def create_id_lists(kaiju, direction):
 			taxonomy = [int(i) for i in taxonomy]
 		return taxonomy, sequence
 
-###########################################
-# CHECKING RESULTS OF 'create_id_lists()' #
-###########################################
+# CHECKING RESULTS OF 'create_id_lists()'
 
-#Printing lists from Kaiju file
-taxonomy_list, sequence_list = create_id_lists(kaiju, "/1")
+taxonomy_list, sequence_list = create_id_lists(kaiju_file)
 #print("taxonomy list =", taxonomy_list)
 #print("sequence list =", sequence_list)
 
-#################################
-# CREATING RAW KAIJU DICTIONARY #
-#################################
+# Creating raw kaiju dictionary 
 
 def raw_kaiju_dict(taxonomy, sequence):
 	""" Getting taxonomy, sequence lists and create raw Kaiju dictionary.
@@ -74,16 +103,12 @@ def raw_kaiju_dict(taxonomy, sequence):
 		kaiju_dict[k].append(v)
 	return kaiju_dict
 
-##########################################
-# CHECKING RESULTS OF 'raw_kaiju_dict()' #
-##########################################
+# CHECKING RESULTS OF 'raw_kaiju_dict()'
 
 kaiju_dict = raw_kaiju_dict(taxonomy_list, sequence_list)
 #print("raw kaiju dict =", kaiju_dict)
 
-######################################
-# CREATING FILTERED KAIJU DICTIONARY #
-######################################
+# Creating filtered kaiju dictionary
 
 def filter_for_kaiju_dict(kaiju_dict):
 	""" Apply a filter to raw Kaiju dictionary.
@@ -96,16 +121,12 @@ def filter_for_kaiju_dict(kaiju_dict):
 			filtered_kaiju_dict[key] = value	
 	return filtered_kaiju_dict
 
-#################################################
-# CHECKING RESULTS OF 'filter_for_kaiju_dict()' #
-#################################################
+# CHECKING RESULTS OF 'filter_for_kaiju_dict()'
 
 filtered_kaiju_dict = filter_for_kaiju_dict(kaiju_dict)
 #print("filtered_kaiju_dict", filtered_kaiju_dict)
 
-##############################################
-# APPLY TAXONOMY LEVEL FILTER TO FASTQ FILES #
-##############################################
+# Apply Taxonomy Level filter to FASTQ files 
 
 filtered_R1 = []
 filtered_R2 = []
@@ -126,5 +147,3 @@ new_R1 = open("./filtered_R1.fastq", "a+")
 for i in filtered_R1:
 	new_R1.writelines(i)
 new_R1.close()
-
-
