@@ -51,22 +51,22 @@ def flatten(items):
 
 # Create taxonomy and sequences list
 
-def create_id_lists(kaiju_file):
+def create_id_lists(kaiju_file, direction):
 	""" Reading Kaiju file and creating the following lists by each ID:
 	- taxonomy_id (3rd column)
 	- taxonomy (integer)
 	- sequence_id lists (2nd column)
 	"""
 	#Checking fastq files direction
-	if "R1" in R1:
-	        direction = "/1"
+	##if "R1" in R1:
+	        ##direction = "/1"
         	#print(direction)
-	elif "R2" in R2:
-        	direction = "/2"
+	##elif "R2" in R2:
+        	##direction = "/2"
         	#print(direction)
-	else:
-        	print("File {} isn't a R1 or R2 file".format(R1))
-        	exit()
+	##else:
+        	##print("File {} isn't a R1 or R2 file".format(R1))
+        	##exit()
 
 	#Creating empty lists
 	taxonomy_id = []
@@ -88,7 +88,7 @@ def create_id_lists(kaiju_file):
 
 # CHECKING RESULTS OF 'create_id_lists()'
 
-taxonomy_list, sequence_list = create_id_lists(kaiju_file)
+##taxonomy_list, sequence_list = create_id_lists(kaiju_file, direction)
 #print("taxonomy list =", taxonomy_list)
 #print("sequence list =", sequence_list)
 
@@ -105,7 +105,7 @@ def raw_kaiju_dict(taxonomy, sequence):
 
 # CHECKING RESULTS OF 'raw_kaiju_dict()'
 
-kaiju_dict = raw_kaiju_dict(taxonomy_list, sequence_list)
+##kaiju_dict = raw_kaiju_dict(taxonomy_list, sequence_list)
 #print("raw kaiju dict =", kaiju_dict)
 
 # Creating filtered kaiju dictionary
@@ -123,27 +123,80 @@ def filter_for_kaiju_dict(kaiju_dict):
 
 # CHECKING RESULTS OF 'filter_for_kaiju_dict()'
 
-filtered_kaiju_dict = filter_for_kaiju_dict(kaiju_dict)
+##filtered_kaiju_dict = filter_for_kaiju_dict(kaiju_dict)
 #print("filtered_kaiju_dict", filtered_kaiju_dict)
 
 # Apply Taxonomy Level filter to FASTQ files 
 
-filtered_R1 = []
-filtered_R2 = []
+#filtered_R1 = []
+#filtered_R2 = []
 
-for i in filtered_kaiju_dict.values():
-	ids = list(flatten(filtered_kaiju_dict.values()))
+##for i in filtered_kaiju_dict.values():
+##	ids = list(flatten(filtered_kaiju_dict.values()))
 	#print("filtered key values", ids)
 
-fastq_parser = SeqIO.parse("./20_SRR8771430.trimmed.R1.fastq", "fastq")
-for fastq_rec in fastq_parser:
+##fastq_parser = SeqIO.parse("./20_SRR8771430.trimmed.R1.fastq", "fastq")
+##for fastq_rec in fastq_parser:
 	#print(fastq_rec.id)
-	if fastq_rec.id in ids:
-		filtered_R1.append(fastq_rec.format("fastq"))
+##	if fastq_rec.id in ids:
+##		filtered_R1.append(fastq_rec.format("fastq"))
 		#print("filtered R1", filtered_R1)
 		#print("sequence in dict", fastq_rec.format("fastq"))
 
-new_R1 = open("./filtered_R1.fastq", "a+")
-for i in filtered_R1:
-	new_R1.writelines(i)
-new_R1.close()
+##new_R1 = open("./filtered_R1.fastq", "a+")
+##for i in filtered_R1:
+##	new_R1.writelines(i)
+##new_R1.close()
+
+# Final running
+#SRR8771430.trimmed.R1_20lines.fastq
+filtered_file_R1 = R1[:10] + ".trimmed.R1.filtered.fastq"
+filtered_file_R2 = R2[:10] + ".trimmed.R2.filtered.fastq"
+filtered_R1 = []
+filtered_R2 = []
+R_files = [R1, R2]
+
+for i in R_files:
+        if "R1" in i:
+                direction = "/1"
+		taxonomy_list, sequence_list = create_id_lists(kaiju_file, direction)
+		kaiju_dict = raw_kaiju_dict(taxonomy_list, sequence_list)
+		filtered_kaiju_dict = filter_for_kaiju_dict(kaiju_dict)
+		for i in filtered_kaiju_dict.values():
+			 ids = list(flatten(filtered_kaiju_dict.values()))
+			#print("filtered key values", ids)
+
+		fastq_parser = SeqIO.parse(R1, "fastq")
+		for fastq_rec in fastq_parser:
+        		#print(fastq_rec.id)
+        		if fastq_rec.id in ids:
+				filtered_R1.append(fastq_rec.format("fastq"))
+				#print("filtered R1", filtered_R1)
+				#print("sequence in dict", fastq_rec.format("fastq"))
+
+		new_R1 = open(filtered_file_R1, "a+")
+		for i in filtered_R1:
+		      new_R1.writelines(i)
+		new_R1.close()
+
+        elif "R2" in i:
+                direction = "/2"
+                taxonomy_list, sequence_list = create_id_lists(kaiju_file, direction)
+                kaiju_dict = raw_kaiju_dict(taxonomy_list, sequence_list)
+                filtered_kaiju_dict = filter_for_kaiju_dict(kaiju_dict)
+                for i in filtered_kaiju_dict.values():
+                         ids = list(flatten(filtered_kaiju_dict.values()))
+                        #print("filtered key values", ids)
+
+                fastq_parser = SeqIO.parse(R2, "fastq")
+                for fastq_rec in fastq_parser:
+                        #print(fastq_rec.id)
+                        if fastq_rec.id in ids:
+                                filtered_R2.append(fastq_rec.format("fastq"))
+                                #print("filtered R2", filtered_R1)
+                                #print("sequence in dict", fastq_rec.format("fastq"))
+
+                new_R2 = open(filtered_file_R2, "a+")
+                for i in filtered_R2:
+                      new_R2.writelines(i)
+                new_R2.close()
