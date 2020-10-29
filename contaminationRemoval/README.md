@@ -5,7 +5,7 @@ The main function of this script is to remove sequences classified as contaminan
 
 The contamination removal step can be detailed by the following flowchart:
 
-[contamination_removal](/images/contamination_removal.png)
+![contamination_removal](/images/contamination_removal.png)
 
 Different versions of this script have different structures and the runtime benchmarking is described below:
 
