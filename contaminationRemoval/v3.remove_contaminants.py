@@ -21,7 +21,7 @@ parser.add_argument('-k', dest='kaiju_file', metavar='<.kaiju file>', help='A .k
 parser.add_argument('-R1', dest='R1_file', metavar='<R1 file>', help='R1 FASTQ file', required=True)
 parser.add_argument('-R2', dest='R2_file', metavar='<R1 file>', help='R2 FASTQ file', required=True)
 parser.add_argument('-t', dest='taxonomy_level', metavar='<Taxonomy level>', type=str, help='Only descendants from this Taxonomy Level will be maintained',required=True)
-parser.add_argument('-v', '--version', action='version', version='%(prog)s v3.1')
+parser.add_argument('-v', '--version', action='version', version='%(prog)s v3.2')
 
 # Getting arguments
 
@@ -38,10 +38,14 @@ descendants = ncbi.get_descendant_taxa(taxonomy_level)
 
 # Create filtered files names
 
-filtered_R1 = R1[:10] + R1[19:29] + ".trimmed.R1.filtered.fastq"
-filtered_R2 = R2[:10] + R1[19:29] + ".trimmed.R2.filtered.fastq"
-unfiltered_R1 = R1[:10] + R1[19:29] + ".trimmed.R1.unclassified.fastq"
-unfiltered_R2 = R2[:10] + R1[19:29] + ".trimmed.R2.unclassified.fastq"
+# Input: SRR8771429.trimmed.5905288_00_R1.fastq
+# Output: SRR8771429.trimmed.5905288_00_filtered.R1.fastq
+# Output: SRR8771429.trimmed.5905288_00_unclassified.R1.fastq
+
+filtered_R1 = R1[:-8] + "filtered.R1.fastq"
+filtered_R2 = R2[:-8] + "filtered.R1.fastq"
+unfiltered_R1 = R1[:-8] + "unclassified.R1.fastq"
+unfiltered_R2 = R2[:-8] + "unclassified.R2.fastq"
 
 # Create index for large fastq files - This process dramatically decreases the runtime and RAM usage when compared to dictionaries.
 
