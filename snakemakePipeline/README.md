@@ -6,13 +6,13 @@ We developed this snakemake pipeline as a part of the SugarCane Pan-Transcriptom
 
 This pipeline allows the user to assemble transcriptomes in a scalable way and with high reproducibility.
 
-![Snakemake_Pipeline](/Snakemake_Pipeline/dag.svg)
+![Snakemake_Pipeline](/snakemakePipeline/dag.svg)
 
 ### Draft
 
 This figure represents the draft of the pipeline to assemble transcriptomes using raw RNA-Seq data.
 
-![Pipeline_Draft](/Snakemake_Pipeline/draft.png)
+![Pipeline_Draft](/snakemakePipeline/draft.png)
 
 ### References
 
