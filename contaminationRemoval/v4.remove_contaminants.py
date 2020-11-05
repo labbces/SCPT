@@ -4,6 +4,7 @@
 			This script removes contaminated sequences from FASTQ files!
 		The user determines the sequences that must be maintained from a Taxonomy Level.
 	if Taxonomy Level = "Viridiplantae": Only descendants from "Viridiplantae" will be maintained.
+				Requirements: R1.fastq and R2.fastq index_db
 '''
 
 import argparse
@@ -21,7 +22,7 @@ parser.add_argument('-k', dest='kaiju_file', metavar='<.kaiju file>', help='A .k
 parser.add_argument('-R1', dest='R1_file', metavar='<R1 file>', help='R1 FASTQ file', required=True)
 parser.add_argument('-R2', dest='R2_file', metavar='<R1 file>', help='R2 FASTQ file', required=True)
 parser.add_argument('-t', dest='taxonomy_level', metavar='<Taxonomy level>', type=str, help='Only descendants from this Taxonomy Level will be maintained',required=True)
-parser.add_argument('-v', '--version', action='version', version='%(prog)s v4.0')
+parser.add_argument('-v', '--version', action='version', version='%(prog)s v4.1')
 
 # Getting arguments
 
@@ -31,20 +32,18 @@ R1 = args.R1_file
 R2 = args.R2_file
 taxonomy_level = args.taxonomy_level
 
-# Open indexdb
+# Opening fastq files index_db
 
 try:
-	index_R1 = open(R1[:-5] + "index", "r")
-except IOError:
-	print(R1[:-5] + "index", "dont exist. Please create the indexdb for fastq files running 'create_index_db.py'")
+	index_R1 = SeqIO.index_db(R1[:-5] + "index")
+except ValueError:
+	print("{} Dont exist. Please create an index_db for the R1_fastq_files running 'create_index_db.py'".format(R1[:-5] + "index"))
 
 try:
-        index_R2 = open(R2[:-5] + "index", "r")
-except IOError:
-        print(R2[:-5] + "index", "dont exist. Please create the indexdb for fastq files running 'create_index_db.py'")
-
-#index_db_R1 = R1[:-5] + "index"
-#index_db_R2 = R2[:-5] + "index"
+	index_R2 = SeqIO.index_db(R2[:-5] + "index")
+except ValueError:
+        print("{} Dont exist. Please create an index_db for the R2_fastq_files running 'create_index_db.py'".format(R2[:-5] + "index"))
+	sys.exit(1)	
 
 # Getting taxonomy database and taxonomy level
 
@@ -53,16 +52,12 @@ descendants = ncbi.get_descendant_taxa(taxonomy_level)
 
 # Create filtered files names
 
-filtered_R1 = R1[:-8] + "filtered.R1.fastq"
-filtered_R2 = R2[:-8] + "filtered.R2.fastq"
-unfiltered_R1 = R1[:-8] + "unclassified.R1.fastq"
-unfiltered_R2 = R2[:-8] + "unclassified.R2.fastq"
+filtered_R1 = kaiju_file[27:30] + R1[:-8] + "filtered.R1.fastq"
+filtered_R2 = kaiju_file[27:30] + R2[:-8] + "filtered.R2.fastq"
+unfiltered_R1 = kaiju_file[27:30] + R1[:-8] + "unclassified.R1.fastq"
+unfiltered_R2 = kaiju_file[27:30] + R2[:-8] + "unclassified.R2.fastq"
 
-# Read fastq index
-
-record_R1_dict = SeqIO.index_db(index_db_R1, "fastq")
-record_R2_dict = SeqIO.index_db(index_db_R2, "fastq")
-
+# Filtering and creating files
 
 with open(kaiju_file, "r") as kaiju, open(filtered_R1, "w") as classified_R1, open(filtered_R2, "w") as classified_R2, open(unfiltered_R1, "w") as unclassified_R1, open(unfiltered_R2, "w") as unclassified_R2:
 	for line in kaiju:
@@ -75,15 +70,13 @@ with open(kaiju_file, "r") as kaiju, open(filtered_R1, "w") as classified_R1, op
 
 		# To avoid long time processing - looking only at classified reads
 
-		if line.startswith("C") and taxonomy_id in descendants and R1_sequence_id in index_R2.keys():
-			SeqIO.write(record_R1_dict[R1_sequence_id], classified_R1, "fastq")
-                       	SeqIO.write(record_R2_dict[R2_sequence_id], classified_R2, "fastq")
-
-		# If line.startswith("U") or line.startswith("C") and isnt in descendants
+		if line.startswith("C") and taxonomy_id in descendants:
+			SeqIO.write(index_R1[R1_sequence_id], classified_R1, "fastq")
+                       	SeqIO.write(index_R2[R2_sequence_id], classified_R2, "fastq")
 
 		else:
-			if R1_sequence_id in index_R2.keys():
-				SeqIO.write(record_R1_dict[R1_sequence_id], unclassified_R1, "fastq")
-				SeqIO.write(record_R2_dict[R2_sequence_id], unclassified_R2, "fastq")
+			SeqIO.write(index_R1[R1_sequence_id], unclassified_R1, "fastq")
+			SeqIO.write(index_R2[R2_sequence_id], unclassified_R2, "fastq")
+
 	print("Filtered files was created as {} and {}".format(filtered_R1, filtered_R2))
        	print("Unclassified files was created as {} and {}".format(unfiltered_R1, unfiltered_R2))
