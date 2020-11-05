@@ -8,6 +8,22 @@ The contamination removal step can be detailed by the following flowchart:
 
 ![contamination_removal](/images/contamination_removal.png)
 
+### Usage
+1. Split large kaiju file into pieces running `submit_slit_large_kaiju_file.sh`
+2. Generate an index_db for the fastq files running `create_fastq_indexdb.py`
+3. And then, run `v4.remove_contaminants.py`
+
+### Outputs
+
+* R1 and R2 filtered.fastq files:
+
+These files contains only sequences that have a taxonomic level within the taxonomic level entered by the user (e.g Viridiplantae) 
+
+* R1 and R2 unclassified.fastq files:
+
+Kaiju's unclassified sequences and sequences classified outside the taxonomic level entered by the user are included in these files (e.g every taxonomic level outside Viridiplantae)
+
+### Benchmarking
 Different versions of this script have different structures and the runtime benchmarking is described below:
 
 |      | v1        | v2        | v3        | v4        |
@@ -20,12 +36,4 @@ The shorter runtime of version 3 is a consequence of storing the sequence id wit
 
 In addition, version 3 writes the new filtered file while reading the raw fastq file. So only one line at time is stored in memory.
 
-### Outputs
 
-* R1 and R2 filtered.fastq files:
-
-These files contains only sequences that have a taxonomic level within the taxonomic level entered by the user (e.g Viridiplantae) 
-
-* R1 and R2 unclassified.fastq files:
-
-Kaiju's unclassified sequences and sequences classified outside the taxonomic level entered by the user are included in these files (e.g every taxonomic level outside Viridiplantae)
