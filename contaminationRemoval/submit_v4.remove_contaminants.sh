@@ -2,7 +2,7 @@
 #$ -cwd
 #$ -V
 #$ -q all.q
-#$ -t 1-8
+#$ -t 1-9
 #$ -pe smp 1
 
 infileR1=`ls -1 *.trimmed.R1.fastq* | head -n1 | tail -n1`

@@ -13,4 +13,4 @@ kaiju=`ls -1 *.trimmed.kaiju`
 
 echo $prefix
 
-split -n 8 -d --additional-suffix=.kaiju  $kaiju $prefix.trimmed_
+split -l 5331149 -d --additional-suffix=.kaiju  $kaiju $prefix.trimmed_
