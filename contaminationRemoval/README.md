@@ -15,13 +15,9 @@ The contamination removal step can be detailed by the following flowchart:
 
 ### Outputs
 
-* R1 and R2 filtered.fastq files:
+* `R1 and R2 filtered.fastq files`: Contains only sequences that have a taxonomic level within the taxonomic level entered by the user (e.g Viridiplantae) 
 
-These files contains only sequences that have a taxonomic level within the taxonomic level entered by the user (e.g Viridiplantae) 
-
-* R1 and R2 unclassified.fastq files:
-
-Kaiju's unclassified sequences and sequences classified outside the taxonomic level entered by the user are included in these files (e.g every taxonomic level outside Viridiplantae)
+* `R1 and R2 unclassified.fastq files`: Kaiju's unclassified sequences and sequences classified outside the taxonomic level entered by the user (e.g every taxonomic level outside Viridiplantae)
 
 ### Benchmarking
 Different versions of this script have different structures and the runtime benchmarking is described below:
