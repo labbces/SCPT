@@ -22,7 +22,7 @@ parser.add_argument('-k', dest='kaiju_file', metavar='<.kaiju file>', help='A .k
 parser.add_argument('-R1', dest='R1_file', metavar='<R1 file>', help='R1 FASTQ file', required=True)
 parser.add_argument('-R2', dest='R2_file', metavar='<R1 file>', help='R2 FASTQ file', required=True)
 parser.add_argument('-t', dest='taxonomy_level', metavar='<Taxonomy level>', type=str, help='Only descendants from this Taxonomy Level will be maintained',required=True)
-parser.add_argument('-v', '--version', action='version', version='%(prog)s v4.1')
+parser.add_argument('-v', '--version', action='version', version='%(prog)s v4.2')
 
 # Getting arguments
 
@@ -57,6 +57,11 @@ filtered_R2 = kaiju_file[27:30] + R2[:-8] + "filtered.R2.fastq"
 unfiltered_R1 = kaiju_file[27:30] + R1[:-8] + "unclassified.R1.fastq"
 unfiltered_R2 = kaiju_file[27:30] + R2[:-8] + "unclassified.R2.fastq"
 
+#Create counter
+
+count_filtered_sequences = 0
+count_unclassified_sequences = 0
+
 # Filtering and creating files
 
 with open(kaiju_file, "r") as kaiju, open(filtered_R1, "w") as classified_R1, open(filtered_R2, "w") as classified_R2, open(unfiltered_R1, "w") as unclassified_R1, open(unfiltered_R2, "w") as unclassified_R2:
@@ -68,15 +73,21 @@ with open(kaiju_file, "r") as kaiju, open(filtered_R1, "w") as classified_R1, op
                 R2_sequence_id = line.split()[1] + "/2"
 		taxonomy_id = int(line.split()[2])
 
-		# To avoid long time processing - looking only at classified reads
+		# Getting sequences in descendants (user taxonomic level)
 
 		if line.startswith("C") and taxonomy_id in descendants:
+			count_filtered_sequences += 1
 			SeqIO.write(index_R1[R1_sequence_id], classified_R1, "fastq")
                        	SeqIO.write(index_R2[R2_sequence_id], classified_R2, "fastq")
 
-		else:
+		# Getting unclassified reads in kaiju file
+
+		elif line.startswith("U"):
+			count_unclassified_sequences += 1
 			SeqIO.write(index_R1[R1_sequence_id], unclassified_R1, "fastq")
 			SeqIO.write(index_R2[R2_sequence_id], unclassified_R2, "fastq")
-
+	
+	print("{} sequences classified by Kaiju are within the taxonomic level {}.".format(count_filtered_sequences, taxonomy_level))
+	print("{} sequences are unclassifieds by Kaiju".format(count_unclassified_sequences))
 	print("Filtered files was created as {} and {}".format(filtered_R1, filtered_R2))
        	print("Unclassified files was created as {} and {}".format(unfiltered_R1, unfiltered_R2))
