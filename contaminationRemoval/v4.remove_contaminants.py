@@ -52,10 +52,10 @@ descendants = ncbi.get_descendant_taxa(taxonomy_level)
 
 # Create filtered files names
 
-filtered_R1 = kaiju_file[27:30] + R1[:-8] + "filtered.R1.fastq"
-filtered_R2 = kaiju_file[27:30] + R2[:-8] + "filtered.R2.fastq"
-unfiltered_R1 = kaiju_file[27:30] + R1[:-8] + "unclassified.R1.fastq"
-unfiltered_R2 = kaiju_file[27:30] + R2[:-8] + "unclassified.R2.fastq"
+filtered_R1 = kaiju_file[19:22] + R1[:-8] + "filtered.R1.fastq"
+filtered_R2 = kaiju_file[19:22] + R2[:-8] + "filtered.R2.fastq"
+unfiltered_R1 = kaiju_file[19:22] + R1[:-8] + "unclassified.R1.fastq"
+unfiltered_R2 = kaiju_file[19:22] + R2[:-8] + "unclassified.R2.fastq"
 
 #Create counter
 
@@ -88,6 +88,6 @@ with open(kaiju_file, "r") as kaiju, open(filtered_R1, "w") as classified_R1, op
 			SeqIO.write(index_R2[R2_sequence_id], unclassified_R2, "fastq")
 	
 	print("{} sequences classified by Kaiju are within the taxonomic level {}.".format(count_filtered_sequences, taxonomy_level))
-	print("{} sequences are unclassifieds by Kaiju".format(count_unclassified_sequences))
+	print("{} sequences are unclassified by Kaiju".format(count_unclassified_sequences))
 	print("Filtered files was created as {} and {}".format(filtered_R1, filtered_R2))
        	print("Unclassified files was created as {} and {}".format(unfiltered_R1, unfiltered_R2))
