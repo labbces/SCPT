@@ -9,6 +9,9 @@ The contamination removal step can be detailed by the following flowchart:
 ![contamination_removal](/images/contamination_removal.png)
 
 ### Usage
+The taxid file can be generated using Kaiju or Kraken. 
+We used a custom Kraken database with the following available source databases: archaea, bacteria, fungi, human, nt, plant, protozoa, UniVec_Core and viral 
+
 1. Split large kaiju file into pieces running `submit_slit_large_kaiju_file.sh`
 2. Generate an index_db for the fastq files running `create_fastq_indexdb.py`
 3. And then, run `v4.remove_contaminants.py`
