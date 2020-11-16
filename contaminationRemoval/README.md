@@ -22,6 +22,18 @@ We used a custom Kraken database with the following available source databases: 
 
 * `R1 and R2 unclassified.fastq files`: Kaiju's unclassified sequences and sequences classified outside the taxonomic level entered by the user (e.g every taxonomic level outside Viridiplantae)
 
+### Validation
+You can validate your filtered files running Kaiju or Kraken against the database used to generate the labeled file. If everything worked well, you will only see reads with taxonomic level within the taxonomic level inserted by the user (Viridiplantae in this study).   
+
+OBS: If you are using Kraken, you have to merge all filtered.fastq files with the simply following command:
+```
+cat *filtered.R1* > $prefix.filtered.R1.fastq
+cat *filtered.R2* > $prefix.filtered.R1.fastq
+cat *unclassified.R1* > $prefix.unclassified.R1.fastq
+cat *unclassified.R1* > $prefix.unclassified.R2.fastq
+```
+This prevents Kraken from using unnecessary RAM, as for each round the kraken loads the complete hash table dataset (254GB in this study). 
+
 ### Benchmarking
 Different versions of this script have different structures and the runtime benchmarking is described below:
 
