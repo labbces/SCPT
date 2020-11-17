@@ -52,6 +52,7 @@ descendants = ncbi.get_descendant_taxa(taxonomy_level)
 
 # Create filtered files names
 
+#SRR8771429.trimmed_00.kraken
 filtered_R1 = kaiju_file[19:22] + R1[:-8] + "filtered.R1.fastq"
 filtered_R2 = kaiju_file[19:22] + R2[:-8] + "filtered.R2.fastq"
 unfiltered_R1 = kaiju_file[19:22] + R1[:-8] + "unclassified.R1.fastq"
