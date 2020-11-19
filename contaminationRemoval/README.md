@@ -39,9 +39,9 @@ Different versions of this script have different structures and the runtime benc
 
 |      | v1        | v2        | v3        | v4        |
 |------|-----------|-----------|-----------|-----------|
-| real | 4m16.855s | 0m47.112s | 0m12.245s |           |
-| user | 4m6.304s  | 0m39.913s | 0m9.743s  |           |
-| sys  | 0m0.663s  | 0m0.537s  | 0m0.550s  |           |
+| real | 4m16.855s | 0m47.112s | 0m12.245s | 0m10.245s |
+| user | 4m6.304s  | 0m39.913s | 0m9.743s  | 0m6.545s  |
+| sys  | 0m0.663s  | 0m0.537s  | 0m0.550s  | 0m0.345s  |
 
 The shorter runtime of version 3 is a consequence of storing the sequence id with its index, this process is performed with the biopython 'SeqIO.index' function.
 
