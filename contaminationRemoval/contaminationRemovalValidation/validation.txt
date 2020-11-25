@@ -1,3 +1,0 @@
-Total Viridiplantae reads = 10
-Total contaminants reads = 0
-Total unclassified reads = 0
