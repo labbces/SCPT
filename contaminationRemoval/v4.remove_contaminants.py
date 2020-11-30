@@ -50,9 +50,22 @@ except ValueError:
 ncbi = NCBITaxa()
 descendants = ncbi.get_descendant_taxa(taxonomy_level)
 
+# Getting user taxonomy level and append to descendants 
+
+name2taxid = ncbi.get_name_translator([taxonomy_level])
+user_tax_id = name2taxid.values()[0][0] # Getting first item in list of list, e.g [[item]].
+descendants.append(user_tax_id)
+
+'''	Just to confirm if user_taxid_id is within descendants
+if user_tax_id in descendants:
+	print("user_taxid in descendants = True")
+else:
+	print("user_taxid in descendants = False")
+'''
+
+
 # Create filtered files names
 
-#SRR8771429.trimmed_00.kraken
 filtered_R1 = kaiju_file[19:22] + R1[:-8] + "filtered.R1.fastq"
 filtered_R2 = kaiju_file[19:22] + R2[:-8] + "filtered.R2.fastq"
 unfiltered_R1 = kaiju_file[19:22] + R1[:-8] + "unclassified.R1.fastq"
