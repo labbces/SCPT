@@ -48,7 +48,7 @@ except ValueError:
 # Getting taxonomy database and taxonomy level
 
 ncbi = NCBITaxa()
-descendants = ncbi.get_descendant_taxa(taxonomy_level)
+descendants = ncbi.get_descendant_taxa(taxonomy_level, intermediate_nodes=True) # Getting intermediate nodes, like Streptophyta (35493) 
 
 # Getting user taxonomy level and append to descendants 
 
