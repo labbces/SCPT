@@ -13,4 +13,4 @@ OUTBASE=${OUTBASE/.trimmed.R1.fastq}
 OUTPUT=${OUTBASE}.trimmed.kraken
 
 module load Kraken2/2.0.7_beta
-kraken2 --db /Storage/data1/felipe.peres/kraken2/KrakenDB --threads $NSLOTS --report-zero-counts --output $OUTPUT --paired $INFILER1 $INFILER2
+kraken2 --db /Storage/data1/felipe.peres/kraken2/KrakenDB --threads $NSLOTS --report-zero-counts --report --output $OUTPUT --paired $INFILER1 $INFILER2
