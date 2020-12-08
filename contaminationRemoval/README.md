@@ -18,10 +18,16 @@ With the Taxonomy Classification file and fastq index in hand, simply run the co
 ```
 ./v4.remove_contaminants.py -k $Taxonomy_Classification_file -R1 $R1.fastq -R2 $R2.fastq -t $Taxonomy Level
 ```
+Where:
+* -k = Taxonomy Classification file
+* -R1 and -R2 = Paired fastq files
+* -t = Taxonomy Level requested by the user. If Taxonomy Level = "Viridiplantae", only descendants from "Viridiplantae" will be maintained. 
+
+Run `./v4.remove_contaminants.py --help` to read the help.
 
 ### Outputs
 
-* `filtered.fastq files`: Sequences that have a taxonomic level within the Taxonomy Level requested by the user (e.g if -t = Viridiplantae, this file will contain all sequences with taxid inside Viridiplantae) 
+* `filtered.fastq files`: Sequences that have a taxonomic level within the Taxonomy Level requested by the user
 
 * `unclassified.fastq files`: Sequences that didn't have an assigned taxonomic level
 
@@ -31,7 +37,7 @@ With the Taxonomy Classification file and fastq index in hand, simply run the co
 
 Many software are used to generate a taxonomic classification file, such as Kaiju, Kraken1, Kraken2. 
 
-Here we used a custom Kraken2 database* with the following available source databases: archaea, bacteria, fungi, human, nt, plant, protozoa, UniVec_Core and viral.
+Here we used a custom Kraken2 database with the following available source databases: archaea, bacteria, fungi, human, nt, plant, protozoa, UniVec_Core and viral.
 
 1. Install a taxonomy.
 ```
