@@ -1,53 +1,38 @@
 ### Removing contaminants from fastq files
-### ! Under Construction !
+
 ### About 
-This directory contains 3 different versions of the 'remove contaminants.py' script.
-The main function of this script is to remove sequences classified as contaminants from fastq files.
 
-The contamination removal step can be detailed by the following flowchart:
+We developed a simple method to remove unwanted sequences from raw fastq files, such as contaminating sequences.
 
-![contamination_removal](/images/contamination_removal.png)
+### How does it work?
 
-### Usage
-The taxid file can be generated using Kaiju or Kraken. 
-We used a custom Kraken2 database* with the following available source databases: archaea, bacteria, fungi, human, nt, plant, protozoa, UniVec_Core and viral 
+The [contamination removal software](https://github.com/labbces/SCPT/blob/master/contaminationRemoval/scripts/v4.remove_contaminants.py) removes contaminated sequences from fastq files based on the Taxonomy Level (NCBI Taxonomy) requested by the user and creates two output files: filtered.fastq and unclassified.fastq. See the flowchart below.
 
-1. Split large kaiju file into pieces running `submit_slit_large_kaiju_file.sh`
-2. Generate an index_db for the fastq files running `create_fastq_indexdb.py`
-3. And then, run `v4.remove_contaminants.py`
+<img src="https://github.com/labbces/SCPT/blob/master/images/contaminationRemoval%20flowchart.png" alt="contamination flowchart" width="650"/>
 
-*See the section Database to build the database used in our analysis. 
+To remove contaminated sequences, this software requires a Taxonomy Classification file and the fastq index as input. See the section Requirements to learn how to generate this files. 
+
+### Running
+
+With the Taxonomy Classification file and fastq index in hand, simply run the command below:
+```
+./v4.remove_contaminants.py -k $Taxonomy_Classification_file -R1 $R1.fastq -R2 $R2.fastq -t $Taxonomy Level
+```
 
 ### Outputs
 
-* `R1 and R2 filtered.fastq files`: Contains only sequences that have a taxonomic level within the taxonomic level entered by the user (e.g Viridiplantae) 
+* `filtered.fastq files`: Sequences that have a taxonomic level within the Taxonomy Level requested by the user (e.g if -t = Viridiplantae, this file will contain all sequences with taxid inside Viridiplantae) 
 
-* `R1 and R2 unclassified.fastq files`: Kaiju's unclassified sequences and sequences classified outside the taxonomic level entered by the user (e.g every taxonomic level outside Viridiplantae)
+* `unclassified.fastq files`: Sequences that didn't have an assigned taxonomic level
 
-### Validation
-You can validate your filtered files running Kaiju or Kraken against the database used to generate the labeled file. If everything worked well, you will only see reads with taxonomic level within the taxonomic level inserted by the user (Viridiplantae in this study).   
+### Requirements
 
-OBS: If you are using Kraken, you have to merge all filtered.fastq files with the simply following command:
-```
-cat *filtered.R1* > $prefix.filtered.R1.fastq
-cat *filtered.R2* > $prefix.filtered.R1.fastq
-cat *unclassified.R1* > $prefix.unclassified.R1.fastq
-cat *unclassified.R1* > $prefix.unclassified.R2.fastq
-```
-This prevents Kraken from using unnecessary RAM, as for each round the kraken loads the complete hash table dataset (254GB in this study). 
+##### Kraken Database
 
-### Benchmarking
-Comparison of runtime and RAM usage between 4 versions of remove_contaminants.py script. 
+Many software are used to generate a taxonomic classification file, such as Kaiju, Kraken1, Kraken2. 
 
-![runtime](/images/runtime.png)
+Here we used a custom Kraken2 database* with the following available source databases: archaea, bacteria, fungi, human, nt, plant, protozoa, UniVec_Core and viral.
 
-![RAM_usage](/images/RAM_usage.png)
-
-The shorter runtime of versions 3 and 4 is due to the fact that these versions store the sequence id with its index, this process is performed with the biopython 'SeqIO.index' function.
-
-In addition, version 3 and 4 writes the new filtered file while reading the raw fastq file. So only one line at time is stored in memory.
-
-### Database
 1. Install a taxonomy.
 ```
 kraken2-build --download-taxonomy --db $DBNAME
@@ -69,3 +54,21 @@ kraken2-build --download-library nt --db $DBNAME
 ```
 kraken2-build --build --db $DBNAME
 ```
+
+##### Creating fastq 
+To create a indexdb for your fastq files, simply run the command below:
+```
+./create_fastq_indexdb.py -R1 $R1.fastq -R2 $R2.fastq 
+```
+
+### Benchmarking
+Comparison of RAM usage and Runtime between 4 versions of remove_contaminants.py script. 
+
+<p float="left">
+  <img src="https://github.com/labbces/SCPT/blob/master/images/RAM_usage.png" alt="RAM usage" width="470" />
+  <img src="https://github.com/labbces/SCPT/blob/master/images/runtime.png" alt="Runtime" width="470" />
+</p>  
+
+The shorter runtime of versions 3 and 4 is due to the fact that these versions store the sequence id with its index, this process is performed with the biopython 'SeqIO.index' function.
+
+
