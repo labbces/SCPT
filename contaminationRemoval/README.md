@@ -35,7 +35,7 @@ Run `./v4.remove_contaminants.py --help` to read the help.
 
 ##### Kraken Database
 
-Many software are used to generate a taxonomic classification file, such as Kaiju, Kraken1, Kraken2. 
+Many software are used to generate a taxonomic classification file, such as [Kaiju](https://github.com/bioinformatics-centre/kaiju), [Kraken1](https://github.com/DerrickWood/kraken), [Kraken2](https://github.com/DerrickWood/kraken2). 
 
 Here we used a custom Kraken2 database with the following available source databases: archaea, bacteria, fungi, human, nt, plant, protozoa, UniVec_Core and viral.
 
