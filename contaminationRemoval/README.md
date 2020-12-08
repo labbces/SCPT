@@ -10,11 +10,13 @@ The contamination removal step can be detailed by the following flowchart:
 
 ### Usage
 The taxid file can be generated using Kaiju or Kraken. 
-We used a custom Kraken database with the following available source databases: archaea, bacteria, fungi, human, nt, plant, protozoa, UniVec_Core and viral 
+We used a custom Kraken2 database* with the following available source databases: archaea, bacteria, fungi, human, nt, plant, protozoa, UniVec_Core and viral 
 
 1. Split large kaiju file into pieces running `submit_slit_large_kaiju_file.sh`
 2. Generate an index_db for the fastq files running `create_fastq_indexdb.py`
 3. And then, run `v4.remove_contaminants.py`
+
+*See the section Database to build the database used in our analysis. 
 
 ### Outputs
 
@@ -35,16 +37,35 @@ cat *unclassified.R1* > $prefix.unclassified.R2.fastq
 This prevents Kraken from using unnecessary RAM, as for each round the kraken loads the complete hash table dataset (254GB in this study). 
 
 ### Benchmarking
-Different versions of this script have different structures and the runtime benchmarking is described below:
+Comparison of runtime and RAM usage between 4 versions of remove_contaminants.py script. 
 
-|      | v1        | v2        | v3        | v4        |
-|------|-----------|-----------|-----------|-----------|
-| real | 4m16.855s | 0m47.112s | 0m12.245s | 0m10.245s |
-| user | 4m6.304s  | 0m39.913s | 0m9.743s  | 0m6.545s  |
-| sys  | 0m0.663s  | 0m0.537s  | 0m0.550s  | 0m0.345s  |
+![runtime](/images/runtime.png)
 
-The shorter runtime of version 3 is a consequence of storing the sequence id with its index, this process is performed with the biopython 'SeqIO.index' function.
+![RAM_usage](/images/RAM_usage.png)
 
-In addition, version 3 writes the new filtered file while reading the raw fastq file. So only one line at time is stored in memory.
+The shorter runtime of versions 3 and 4 is due to the fact that these versions store the sequence id with its index, this process is performed with the biopython 'SeqIO.index' function.
 
+In addition, version 3 and 4 writes the new filtered file while reading the raw fastq file. So only one line at time is stored in memory.
 
+### Database
+1. Install a taxonomy.
+```
+kraken2-build --download-taxonomy --db $DBNAME
+```
+
+2. Install reference libraries. 
+```
+kraken2-build --download-library archaea --db $DBNAME
+kraken2-build --download-library bacteria --db $DBNAME
+kraken2-build --download-library viral --db $DBNAME 
+kraken2-build --download-library human --db $DBNAME 
+kraken2-build --download-library fungi --db $DBNAME 
+kraken2-build --download-library plant --db $DBNAME 
+kraken2-build --download-library protozoa --db $DBNAME 
+kraken2-build --download-library nt --db $DBNAME
+```
+
+3. Once your library is finalized, you need to build the database. 
+```
+kraken2-build --build --db $DBNAME
+```
