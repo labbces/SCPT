@@ -33,7 +33,7 @@ Run `./v4.remove_contaminants.py --help` to read the help.
 
 ### Requirements
 
-##### Kraken Database
+##### Kraken2 Database
 
 Many software are used to generate a taxonomic classification file, such as [Kaiju](https://github.com/bioinformatics-centre/kaiju), [Kraken1](https://github.com/DerrickWood/kraken), [Kraken2](https://github.com/DerrickWood/kraken2). 
 
@@ -60,8 +60,20 @@ kraken2-build --download-library nt --db $DBNAME
 ```
 kraken2-build --build --db $DBNAME
 ```
+##### Running Kraken2
+
+Once the library is built, it is time to generate the Taxonomy Classification file. This can be done with the command:
+```
+kraken2 --db $DBNAME --report-zero-counts --report $REPORT_OUTPUT --output $OUTPUT --paired $R1.fastq $R2.fastq
+```
+Where:
+* --report-zero-counts = report taxa with no reads assigned
+* --report = report how many reads in input data
+* --output = report taxid assigned to each sequence 
+* --paired = paired-end reads
 
 ##### Creating fastq 
+
 To create a indexdb for your fastq files, simply run the command below:
 ```
 ./create_fastq_indexdb.py -R1 $R1.fastq -R2 $R2.fastq 
