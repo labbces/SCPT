@@ -63,13 +63,17 @@ else:
 	print("user_taxid in descendants = False")
 '''
 
+### Create filtered files names
 
-# Create filtered files names
+# Getting file informations
+n = re.search(r"(?<=\_)[0-9]+(?=\.kraken)", kaiju_file)
+iden = re.search(r"[\w]+(?=\.trimmed)", kaiju_file)
 
-filtered_R1 = kaiju_file[19:22] + R1[:-8] + "filtered.R1.fastq"
-filtered_R2 = kaiju_file[19:22] + R2[:-8] + "filtered.R2.fastq"
-unfiltered_R1 = kaiju_file[19:22] + R1[:-8] + "unclassified.R1.fastq"
-unfiltered_R2 = kaiju_file[19:22] + R2[:-8] + "unclassified.R2.fastq"
+# Getting the first match of n and iden with "group(0)"
+filtered_R1 = n.group(0) + "." + iden.group(0) + ".trimmed.filtered.R1.fastq"
+filtered_R2 = n.group(0) + "." + iden.group(0) + ".trimmed.filtered.R2.fastq"
+unfiltered_R1 = n.group(0) + "." + iden.group(0) + ".trimmed.unclassified.R1.fastq"
+unfiltered_R2 = n.group(0) + "." + iden.group(0) + ".trimmed.unclassified.R2.fastq"
 
 #Create counter
 
