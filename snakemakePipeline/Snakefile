@@ -11,19 +11,24 @@
 # 4) Setup 'GENOTYPE' variable with the genotype name (e.g GENOTYPE=QN05-1509)
 #
 # Usage (remove the -n to dont show dry-run and start the jobs):
-# 
+# 1) Load modules: BUSCO/3.0; transrate/1.0.3
+# 2) Run the following command:
 # snakemake -np -s Snakefile \
 # --cluster "qsub -q all.q -V -cwd -l h={params.server} -pe smp {threads} -l mem_free={resources.mem_free}G" \
 # --jobs 10
+#
+# Build DAG:
+#
+# snakemake -s Snakefile --dag | dot -Tsvg > dag.svg
 
 configfile: "config.yaml"
 
 import pandas as pd
 import yaml
 
-samples = pd.read_csv("samples_QN05-1509.csv")
+samples = pd.read_csv("samples_Q200.csv")
 parts = pd.read_csv("parts.csv")
-GENOTYPE="QN05-1509"
+GENOTYPE="Q200"
 
 #Software executable
 fastq_dump = config["software"]["fastq-dump"]
@@ -46,7 +51,7 @@ rule all:
 		expand("MyAssembly_{genotype}/6_contamination_removal/{sample}.trimmed.filtered.total.R2.fastq", genotype=GENOTYPE, sample=samples),
 		expand("MyAssembly_{genotype}/6_contamination_removal/{sample}.trimmed.unclassified.total.R1.fastq", genotype=GENOTYPE, sample=samples),
 		expand("MyAssembly_{genotype}/6_contamination_removal/{sample}.trimmed.unclassified.total.R2.fastq", genotype=GENOTYPE, sample=samples),
-		expand("MyAssembly_{genotype}/8_busco/MyAssembly_{genotype}_k25andk31_busco", genotype=GENOTYPE),
+		expand("MyAssembly_{genotype}_k25andk31_busco", genotype=GENOTYPE),
 		expand("MyAssembly_{genotype}/9_transrate/transrate_comparative_Shorgum_vs_{genotype}", genotype=GENOTYPE),
 		expand("MyAssembly_{genotype}/10_salmon/quant/", genotype=GENOTYPE)
 		
@@ -242,6 +247,7 @@ filtered_total_R2 = expand("MyAssembly_{{genotype}}/6_contamination_removal/{sam
 unclassified_total_R1 = expand("MyAssembly_{{genotype}}/6_contamination_removal/{sample}.trimmed.unclassified.total.R1.fastq", sample=samples)
 unclassified_total_R2 = expand("MyAssembly_{{genotype}}/6_contamination_removal/{sample}.trimmed.unclassified.total.R2.fastq", sample=samples)
 
+'''
 rule trinity:
 	input:
 		filtered_total_R1 = expand("MyAssembly_{{genotype}}/6_contamination_removal/{sample}.trimmed.filtered.total.R1.fastq", sample=samples),
@@ -293,7 +299,7 @@ rule extract_contiglenght_301:
 	input:
 		transcriptome = "MyAssembly_{genotype}/7_trinity_assembly/MyAssembly_{genotype}_trinity_k25_and_k31.Trinity.merged.final.fasta"
 	output: 
-		"MyAssembly_{genotype}/7_trinity_assembly/MyAssembly_{genotype}_trinity_k25_and_k31.Trinity.merged.final_gt301bp.fasta"
+		"MyAssembly_{genotype}_trinity_k25_and_k31.Trinity.merged.final_gt301bp.fasta"
 	params:
 		server="figsrv"
 	threads: 1
@@ -301,12 +307,13 @@ rule extract_contiglenght_301:
 		"MyAssembly_{genotype}/logs/extract_contigs/{genotype}.log"
 	shell:
 		"{extract_contigs} -f {input.transcriptome} -m 301 2> {log}"
+'''
 
 rule busco:
 	input:
 		transcriptome="MyAssembly_{genotype}/7_trinity_assembly/MyAssembly_{genotype}_trinity_k25_and_k31.Trinity.merged.final_gt301bp.fasta"
 	output:
-		busco="MyAssembly_{genotype}/8_busco/MyAssembly_{genotype}_k25andk31_busco"
+		busco="MyAssembly_{genotype}_k25andk31_busco"
 	params:
 		server="figsrv"
 	resources:
@@ -315,14 +322,14 @@ rule busco:
 	log:
 		"MyAssembly_{genotype}/logs/busco/{genotype}.log"
 	shell:
-		"/usr/bin/time -v {busco} -i {input.transcriptome} -o {output.busco} -c {threads} -m transcriptome -l /Storage/databases/BUSCO_DBs/embryophyta_odb9/"		
+		"/usr/bin/time -v run_BUSCO.py -i {input.transcriptome} -o {output.busco} -c {threads} -m transcriptome -l /Storage/databases/BUSCO_DBs/embryophyta_odb9/ 2> {log}"		
 
 rule transrate:
 	input:
 		transcriptome="MyAssembly_{genotype}/7_trinity_assembly/MyAssembly_{genotype}_trinity_k25_and_k31.Trinity.merged.final_gt301bp.fasta",
 		ref="Sbicolor_454_v3.1.1.transcript.fa"
 	output:
-		transrate="MyAssembly_{genotype}/9_transrate/transrate_comparative_Shorgum_vs_{genotype}"
+		transrate=directory("MyAssembly_{genotype}/9_transrate/transrate_comparative_Shorgum_vs_{genotype}")
 	params:
 		server="figsrv"
 	resources:
@@ -331,12 +338,12 @@ rule transrate:
 	log:
 		"MyAssembly_{genotype}/logs/transrate/{genotype}.log"
 	shell:
-		"/usr/bin/time -v {transrate} --assembly {input.transcriptome} --reference {input.ref} --threads {threads} --output {output.transrate}"
+		"/usr/bin/time -v {transrate} --assembly {input.transcriptome} --reference {input.ref} --threads {threads} --output {output.transrate} 2> {log}"
 rule salmon_index:
 	input:
 		transcriptome="MyAssembly_{genotype}/7_trinity_assembly/MyAssembly_{genotype}_trinity_k25_and_k31.Trinity.merged.final_gt301bp.fasta"
 	output:
-		salmon_index="MyAssembly_{genotype}/10_salmon/index/"
+		salmon_index=directory("MyAssembly_{genotype}/10_salmon/index/")
 	params:
 		server="figsrv"
 	resources:
@@ -345,17 +352,17 @@ rule salmon_index:
 	log:
 		"MyAssembly_{genotype}/logs/salmon_index/{genotype}.log"
 	shell:
-		"/usr/bin/time -v {salmon} index -t {input.transcriptome} -p {threads} -i {output.salmon_index} --gencode"
+		"/usr/bin/time -v {salmon} index -t {input.transcriptome} -p {threads} -i {output.salmon_index} --gencode 2> {log}"
 
 rule salmon_quant:
 	input:
-		salmon_index="MyAssembly_{genotype}/10_salmon/index/",
+		salmon_index = "MyAssembly_{genotype}/10_salmon/index/",
 		filtered_R1 = expand("MyAssembly_{{genotype}}/6_contamination_removal/{sample}.trimmed.filtered.total.R1.fastq", sample=samples),
                 filtered_R2 = expand("MyAssembly_{{genotype}}/6_contamination_removal/{sample}.trimmed.filtered.total.R2.fastq", sample=samples),
                 unclassified_R1 = expand("MyAssembly_{{genotype}}/6_contamination_removal/{sample}.trimmed.unclassified.total.R1.fastq", sample=samples),
                 unclassified_R2 = expand("MyAssembly_{{genotype}}/6_contamination_removal/{sample}.trimmed.unclassified.total.R2.fastq", sample=samples)
 	output:
-		salmon_quant="MyAssembly_{genotype}/10_salmon/quant/"
+		salmon_quant=directory("MyAssembly_{genotype}/10_salmon/quant/")
 	params:
 		server="figsrv",
 		filtered_total_R1=' '.join(filtered_total_R1),
@@ -368,4 +375,4 @@ rule salmon_quant:
 	log: 
 		"MyAssembly_{genotype}/logs/salmon_quant/{genotype}.log"
 	shell:
-		"/usr/bin/time -v {salmon} quant -i {input.salmon_index} -l A -1 {params.filtered_total_R1} {params.unclassified_total_R1} -2 {params.filtered_total_R2} {params.unclassified_total_R2} --validateMappings -o {output.salmon_quant}"
+		"/usr/bin/time -v {salmon} quant -i {input.salmon_index} -l A -1 {params.filtered_total_R1} {params.unclassified_total_R1} -2 {params.filtered_total_R2} {params.unclassified_total_R2} --validateMappings -o {output.salmon_quant} 2> {log}"
