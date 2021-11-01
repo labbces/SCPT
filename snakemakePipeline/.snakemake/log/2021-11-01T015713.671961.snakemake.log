@@ -1,0 +1,4 @@
+Building DAG of jobs...
+MissingInputException in line 590 of /home/felipe/Documents/SCPT/snakemakePipeline/Snakefile:
+Missing input files for rule transrate:
+Sbicolor_454_v3.1.1.transcript.fa
