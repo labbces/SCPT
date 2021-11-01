@@ -1,4 +1,0 @@
-Building DAG of jobs...
-MissingInputException in line 501 of /home/felipe/Documents/SCPT/snakemakePipeline/Snakefile:
-Missing input files for rule busco:
-MyAssembly_QN05-1509/7_trinity_assembly/MyAssembly_QN05-1509_trinity_k25_and_k31.Trinity.merged.final_gt301bp.fasta
