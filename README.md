@@ -22,4 +22,5 @@ Contact information:
 
 
 ### Financial Support
-This research has been supported by [São Paulo Research Foundation (FAPESP)](http://www.fapesp.br/en/), process number: [19/24796-5](https://bv.fapesp.br/en/bolsas/190447/inference-and-annotation-of-the-sugarcane-pantranscriptome/)
+This research has been supported by [São Paulo Research Foundation (FAPESP)](http://www.fapesp.br/en/), process number: [19/24796-5](https://bv.fapesp.br/en/bolsas/190447/inference-and-annotation-of-the-sugarcane-pantranscriptome/) and by 
+Conselho Nacional de Desenvolvimento Científico e Tecnológico (CNPq), process number: 310080/2018-5
