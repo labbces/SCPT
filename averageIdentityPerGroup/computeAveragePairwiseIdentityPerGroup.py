@@ -19,7 +19,7 @@ if  shutil.which('identity'):
     print('Identity program found')
 else:
     print('Identity program not found')
-#    exit()
+    exit()
 
 if os.path.isfile(fastaFileGZ):
 #    with gzip.open(fastaFileGZ, "rt") as fastaHandle:
@@ -28,7 +28,8 @@ if os.path.isfile(fastaFileGZ):
     with gzip.open(fastaFileGZ, 'rb') as f_in:
         with open(fastaFile, 'wb') as f_out:
             shutil.copyfileobj(f_in, f_out)    
-    fastaRecords = SeqIO.index(fastaFile, "fasta")
+    #fastaRecords = SeqIO.index(fastaFile, "fasta")
+    fastaRecords = SeqIO.index_db("index_file.sqlite",fastaFile, "fasta")
 else:
     print("fasta file does not exist")
     exit()
