@@ -21,18 +21,18 @@ for file in glob.glob(pathBlastFiles):
     sp1,sp2=basename.split('.')[0].split('_')
     sp1=re.sub('Blast','',sp1)
     # print(f'{sp1}\t{sp2}')
-    countlines=0
-    if basename not in files2change.keys():
-        with gzip.open(file, 'rt') as f:
-            content = f.readlines()
-            fields=content[0].split('\t')
-            regex1=r"^"+sp2+r"_"
-            regex2=r"^"+sp1+r"_"
-            if re.match(regex1,fields[0]) and re.match(regex2,fields[1]):
-                secondfile='Blast'+sp2+'_'+sp1+'.txt.gz'
-                if secondfile not in files2change.keys():
-                    files2change[secondfile]=basename
-                # print(f'OK {sp1} {sp2} {file} {fields[0]} {fields[1]}')
+    if sp1 != sp2:
+        if basename not in files2change.keys():
+            with gzip.open(file, 'rt') as f:
+                content = f.readlines()
+                fields=content[0].split('\t')
+                regex1=r"^"+sp2+r"_"
+                regex2=r"^"+sp1+r"_"
+                if re.match(regex1,fields[0]) and re.match(regex2,fields[1]):
+                    secondfile='Blast'+sp2+'_'+sp1+'.txt.gz'
+                    if secondfile not in files2change.keys():
+                        files2change[secondfile]=basename
+
 
 for file in files2change.keys():
     print(f'{file}\t{files2change[file]}')
