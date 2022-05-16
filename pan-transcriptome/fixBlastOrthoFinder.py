@@ -17,12 +17,12 @@ files2change={}
 pathBlastFiles=args.dir+'/Blast*.txt.gz'
 for file in glob.glob(pathBlastFiles):
     basename = os.path.basename(file)
-    print(basename)
     sp1,sp2=basename.split('.')[0].split('_')
     sp1=re.sub('Blast','',sp1)
     # print(f'{sp1}\t{sp2}')
     if sp1 != sp2:
         if basename not in files2change.keys():
+            print(basename)
             with gzip.open(file, 'rt') as f:
                 content = f.readlines()
                 fields=content[0].split('\t')
