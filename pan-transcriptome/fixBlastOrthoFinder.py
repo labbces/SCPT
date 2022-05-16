@@ -42,8 +42,6 @@ for file in files2change.keys():
     tmpName=sp2+'_'+sp1
     old_fileA = os.path.join(args.dir, file)
     new_fileA = os.path.join(args.dir, tmpName)
-    # fileA='Blast'+sp2+'_'+sp1+'.txt.gz'
-    # fileB='Blast'+sp1+'_'+sp2+'.txt.gz'
     old_fileB = os.path.join(args.dir, files2change[file])
     new_fileB = os.path.join(args.dir, file)
     print(f'\t{old_fileA} {new_fileA}\n\t{old_fileB} {new_fileB}\n\t{new_fileA} {old_fileB}\t')
@@ -51,4 +49,5 @@ for file in files2change.keys():
         os.rename(old_fileA, new_fileA)
         os.rename(old_fileB, new_fileB)
         os.rename(new_fileA, old_fileB)
-    
+    else:
+        print(f'missing files check {old_fileA} {old_fileB}')
