@@ -16,7 +16,7 @@ files2change={}
 pathBlastFiles=args.dir+'/Blast*.txt.gz'
 for file in glob.glob(pathBlastFiles):
     basename = os.path.basename(file)
-    # print(basename)
+    print(basename)
     sp1,sp2=basename.split('.')[0].split('_')
     sp1=re.sub('Blast','',sp1)
     # print(f'{sp1}\t{sp2}')
