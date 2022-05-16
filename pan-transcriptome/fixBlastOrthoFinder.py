@@ -1,4 +1,5 @@
 from fileinput import filename
+from genericpath import exists
 import gzip
 import glob
 import argparse
@@ -46,7 +47,8 @@ for file in files2change.keys():
     old_fileB = os.path.join(args.dir, files2change[file])
     new_fileB = os.path.join(args.dir, file)
     print(f'\t{old_fileA} {new_fileA}\n\t{old_fileB} {new_fileB}\n\t{new_fileA} {old_fileB}\t')
-    os.rename(old_fileA, new_fileA)
-    os.rename(old_fileB, new_fileB)
-    os.rename(new_fileA, old_fileB)
+    if (exists(old_fileA) and exists(old_fileB)):
+        os.rename(old_fileA, new_fileA)
+        os.rename(old_fileB, new_fileB)
+        os.rename(new_fileA, old_fileB)
     
