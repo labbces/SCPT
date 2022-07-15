@@ -1,7 +1,8 @@
 import argparse
+from genericpath import exists
 import os
-from re import S
-import pandas as pd
+import sys
+from Bio import SeqIO
 
 
 parser= argparse.ArgumentParser(description='compute stats from orthogroups.tsv')
@@ -9,21 +10,34 @@ parser.add_argument('--orthogroupsFile', metavar='orthogroupsFile', type=str, he
 parser.add_argument('--numberSpecies', metavar='numberSpecies', type=int, help='Number of species', required=True)
 args= parser.parse_args()
 
+
+#Set grlobal variables
 orthogroupsFile=args.orthogroupsFile
 numberSpecies=args.numberSpecies
+outputClassificationTableFile='panTranscriptomeClassificationTable.tsv'
 numberCoreOrthogroups=0
+numberSoftCoreOrthogroups=0
+numberAccessoryOrthogroups=0
+numberExclusiveOrthogroups=0
 numberCoreProteins   =0
+numberSoftCoreProteins=0
+numberAccessoryProteins=0
+numberExclusiveProteins=0
 coreOrthogroups={}
-numberProreinsPerGroup={}
-numberProreinsPerGroupPerSpecies={}
-proteinPerOrthogroup={}
-proteinPerOrthogroup['core']={}
-proteinPerOrthogroup['noncore']={}
-exclusiveGroups={}
-exclusiveGenes={}
+softCoreOrthogroups={}
+accessoryOrthogroups={}
+exclusiveOrthogroups={}
 
+def compositionOrthogroup (data, classification,og,fh):
+    for line in data:
+        for id in line.split(','):
+            id=id.replace(' ','')
+            if id != '':
+                fh.write(f'{classification}\t{og}\t{id}\n')
+
+#Process orthogroupsFile
 if os.path.isfile(orthogroupsFile):
-    with open(orthogroupsFile, "r") as file:
+    with open(orthogroupsFile, "r") as file, open(outputClassificationTableFile, "w") as outClass:
         for line in file:
             line=line.rstrip()
             if line.startswith('Orthogroup'):
@@ -36,60 +50,42 @@ if os.path.isfile(orthogroupsFile):
                     if fields[i] != '':
                         numberSpeciesInOrthogroup=numberSpeciesInOrthogroup+1
                         numberProteinsInOrthogroup=numberProteinsInOrthogroup+len(fields[i].split(','))
-                        numberProreinsPerGroup[fields[0]]=numberProteinsInOrthogroup
-                        if fields[0] not in numberProreinsPerGroupPerSpecies.keys():
-                            numberProreinsPerGroupPerSpecies[fields[0]]={}
-                            numberProreinsPerGroupPerSpecies[fields[0]][header[i]]=len(fields[i].split(','))
-                        else:
-                            numberProreinsPerGroupPerSpecies[fields[0]][header[i]]=len(fields[i].split(','))
-                            # print(f'{fields[0]}\t{header[i]}\t{numberProreinsPerGroupPerSpecies[fields[0]][header[i]]}')
                         # print(f'{fields[0]}\t{header[i]}\t{fields[i]}')
                 if numberSpeciesInOrthogroup == numberSpecies:
+                    #Hard-core groups
+                    # print(f'Hard-core OG:{fields[0]}')
                     numberCoreOrthogroups=numberCoreOrthogroups+1
-                    # numberCoreProteins=numberCoreProteins+len(fields[1].split(','))
+                    numberCoreProteins=numberCoreProteins+numberProteinsInOrthogroup
                     coreOrthogroups[fields[0]]=numberProteinsInOrthogroup
-                    numberProteinsInOrthogroupPerSpecies=0
-                    for sp in numberProreinsPerGroupPerSpecies[fields[0]].keys():
-                        if fields[0] not in proteinPerOrthogroup['core'].keys():
-                            proteinPerOrthogroup['core'][fields[0]]={}
-                            if sp not in proteinPerOrthogroup['core'][fields[0]].keys():
-                                proteinPerOrthogroup['core'][fields[0]][sp]=numberProreinsPerGroupPerSpecies[fields[0]][sp]
-                        else:
-                            if sp not in proteinPerOrthogroup['core'][fields[0]].keys():
-                                proteinPerOrthogroup['core'][fields[0]][sp]=numberProreinsPerGroupPerSpecies[fields[0]][sp]
-                else:
-                    for sp in numberProreinsPerGroupPerSpecies[fields[0]].keys():
-                        if fields[0] not in proteinPerOrthogroup['core'].keys():
-                            proteinPerOrthogroup['noncore'][fields[0]]={}
-                            if sp not in proteinPerOrthogroup['noncore'][fields[0]].keys():
-                                proteinPerOrthogroup['noncore'][fields[0]][sp]=numberProreinsPerGroupPerSpecies[fields[0]][sp]
-                                # print(f'noncore {fields[0]} {sp} {numberProreinsPerGroupPerSpecies[fields[0]][sp]}')
-                        else:
-                            if sp not in proteinPerOrthogroup['noncore'][fields[0]].keys():
-                                proteinPerOrthogroup['noncore'][fields[0]][sp]=numberProreinsPerGroupPerSpecies[fields[0]][sp]
+                    compositionOrthogroup(fields[1:numberSpecies+1],"Hard-core",fields[0],outClass)
+                if numberSpeciesInOrthogroup >= numberSpecies*0.9:
+                    #Soft-core groups
+                    # print(f'Soft-core OG:{fields[0]}')
+                    numberSoftCoreOrthogroups=numberSoftCoreOrthogroups+1
+                    numberSoftCoreProteins=numberSoftCoreProteins+numberProteinsInOrthogroup
+                    softCoreOrthogroups[fields[0]]=numberProteinsInOrthogroup
+                    compositionOrthogroup(fields[1:numberSpecies+1],"Soft-core",fields[0],outClass)
+                if numberSpeciesInOrthogroup > 1 and numberSpeciesInOrthogroup < numberSpecies*0.9 :
+                    #Accesory groups
+                    # print(f'Accesory-core OG:{fields[0]}')
+                    numberAccessoryOrthogroups=numberAccessoryOrthogroups+1
+                    numberAccessoryProteins=numberAccessoryProteins+numberProteinsInOrthogroup
+                    accessoryOrthogroups[fields[0]]=numberProteinsInOrthogroup
+                    compositionOrthogroup(fields[1:numberSpecies+1],"Accessory",fields[0],outClass)
                 if numberSpeciesInOrthogroup == 1:
-                    # print(f'{list(numberProreinsPerGroupPerSpecies[fields[0]].keys())}')
-                    for sp in numberProreinsPerGroupPerSpecies[fields[0]].keys():
-                        if sp in exclusiveGroups.keys():
-                            exclusiveGroups[sp]=exclusiveGroups[sp]+1
-                            exclusiveGenes[sp] =exclusiveGenes[sp]+numberProreinsPerGroupPerSpecies[fields[0]][sp]
-                        else:
-                            exclusiveGroups[sp]=1
-                            exclusiveGenes[sp] =numberProreinsPerGroupPerSpecies[fields[0]][sp]
-                    # print(exclusiveGroups[sp])
-                    # print(fields[0])
-
-# for t in proteinPerOrthogroup.keys():
-#     for og in proteinPerOrthogroup[t].keys():
-#         for sp in proteinPerOrthogroup[t][og].keys():
-#             print(f'{t}\t{og}\t{sp}\t{proteinPerOrthogroup[t][og][sp]}', file=open('orthogousNumbProts.txt', 'a'))
-
-for sp in exclusiveGroups.keys():
-    print(f'{sp}\t{exclusiveGroups[sp]}\t{exclusiveGenes[sp]}')
-
+                    #Exclusive groups
+                    # print(f'Exclusive OG:{fields[0]}')
+                    numberExclusiveOrthogroups=numberExclusiveOrthogroups+1
+                    numberExclusiveProteins=numberExclusiveProteins+numberProteinsInOrthogroup
+                    exclusiveOrthogroups[fields[0]]=numberProteinsInOrthogroup
+                    compositionOrthogroup(fields[1:numberSpecies+1],"Exclusive",fields[0],outClass)
+                
 numberCoreProteins=sum(coreOrthogroups.values())
-averageNumberOfProtesPerOrthogroupInCore=numberCoreProteins/numberCoreOrthogroups
-averageNumberOfProtesPerOrthogroupInCorePerspecies=0
 print(f'Number of groups present in all ({numberSpecies}) species:\t{numberCoreOrthogroups}\n')
 print(f'Number of proteins present in core groups:\t{numberCoreProteins}\n')
-print(f'Average number of proteins present in core groups:\t{averageNumberOfProtesPerOrthogroupInCore}\n')
+print(f'Number of groups present in 90% of the species ({numberSpecies*0.9}):\t{numberSoftCoreOrthogroups}\n')
+print(f'Number of proteins present in soft-core groups:\t{numberSoftCoreProteins}\n')
+print(f'Number of accesory groups:\t{numberAccessoryOrthogroups}\n')
+print(f'Number of proteins present in accessory groups:\t{numberAccessoryProteins}\n')
+print(f'Number of exclusive groups:\t{numberExclusiveOrthogroups}\n')
+print(f'Number of proteins present in exclusive groups:\t{numberExclusiveProteins}\n')
