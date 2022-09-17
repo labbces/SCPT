@@ -73,11 +73,19 @@ with open(output_file, "a") as write_output_file:
                     core_transcriptome_size += 1
             
             #print(f"pan_transcriptome_size: {pan_transcriptome_size} \t core_transcriptome_size: {core_transcriptome_size} \t number_genotypes: {number_genotypes} \t n_sample: {n_sample}")
-
-            write_output_file.write("pan_transcriptome_size:" + str(pan_transcriptome_size) + "\t"
+a
+            write_output_file.write("pan_transcriptome:" + str(pan_transcriptome_size) + "\t"
                                     + "genes_pan:" + str(genes_pan) + "\t"
-                                    + "core_transcriptome_size:" + str(core_transcriptome_size) + "\t"
-                                    + "genes_core:" + str(genes_core) + "\t"
+                                    + "accessory_transciptome:" + str(accessory_transcriptome_size) + "\t"
+                                    + "genes_accessory:" + str(gene_accessory) + "\t"
+                                    + "soft-core_transcriptome:" + str(soft-core_transcriptome_size) + "\t"
+                                    + "genes_soft-core" + str(genes_soft-core) + "\t"
+                                    + "hard-core_transcriptome:" + str(core_transcriptome_size) + "\t"
+                                    + "genes_hard-core:" + str(genes_core) + "\t"
+                                    + "exclusive_transcriptome:" + str(exclusive_transcriptome_size) + "\t"
+                                    + "genes_exclusive:" str(genes_exclusive) + "\t"
                                     + "number_genotypes:" + str(number_genotypes) + "\t"
-                                    + "n_sample:" + str(n_sample) + "\n")
+                                    + "n_sample:" + str(n_sample) + "\n")                                   
+a
+                                    
 
