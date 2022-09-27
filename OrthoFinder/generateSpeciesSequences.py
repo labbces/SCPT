@@ -1,5 +1,16 @@
 #!/usr/bin/env python
 
+# Generate SpeciesSequences.txt before run OrthoFinder2
+# ids file must contains only the IDENTIFIER of the sequence, without ">", like this:
+#
+# B1_k25_TRINITY_DN10207_c0_g1_i2
+# B1_k25_TRINITY_DN11245_c0_g3_i3
+# B1_k25_TRINITY_DN11588_c0_g1_i7
+# B1_k25_TRINITY_DN11940_c0_g1_i7
+#
+# generating ids file with sed:
+# grep ">" fasta | sed 's/>//g' > fasta_identifiers
+
 import argparse
 
 parser = argparse.ArgumentParser(prog="generateSpeciesSequences.py", description="Generates SpeciesSequences.txt necessary to run OrthoFinder2 (keeping results from old blast search)", add_help=True)
