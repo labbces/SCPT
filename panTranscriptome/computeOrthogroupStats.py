@@ -6,15 +6,18 @@ from Bio import SeqIO
 
 
 parser= argparse.ArgumentParser(description='compute stats from orthogroups.tsv')
-parser.add_argument('--orthogroupsFile', metavar='orthogroupsFile', type=str, help='file with orthogroups generated with OrthoFinder2', required=True)
+parser.add_argument('--orthogroupsFile', metavar='orthogroupsFile', type=str, help='file with orthogroups.tsv generated with OrthoFinder2', required=True)
 parser.add_argument('--numberSpecies', metavar='numberSpecies', type=int, help='Number of species', required=True)
+parser.add_argument('--suffixOut', metavar='suffixOut', type=int, help='Suffix used to create output files', required=True)
 args= parser.parse_args()
 
 
 #Set grlobal variables
 orthogroupsFile=args.orthogroupsFile
 numberSpecies=args.numberSpecies
-outputClassificationTableFile='panTranscriptomeClassificationTable.tsv'
+suffixOut=args.suffixOut
+outputClassificationTableFile='panTranscriptomeClassificationTable'+ args.suffixOut + '.tsv'
+outputDistributionSizeOrthogroupsTableFile='distributionSizeOrthogroupsTable'+ args.suffixOut + '.tsv'
 numberCoreOrthogroups=0
 numberSoftCoreOrthogroups=0
 numberAccessoryOrthogroups=0
@@ -23,6 +26,7 @@ numberCoreProteins   =0
 numberSoftCoreProteins=0
 numberAccessoryProteins=0
 numberExclusiveProteins=0
+averageProteinsPerOrthogroup=0
 coreOrthogroups={}
 softCoreOrthogroups={}
 accessoryOrthogroups={}
@@ -35,9 +39,13 @@ def compositionOrthogroup (data, classification,og,fh):
             if id != '':
                 fh.write(f'{classification}\t{og}\t{id}\n')
 
+def distrubutionProteinsPerOrthogroup (data, fh):
+    for og in data:
+        fh.write(f'{og}\t{data[og]}\n')
+
 #Process orthogroupsFile
 if os.path.isfile(orthogroupsFile):
-    with open(orthogroupsFile, "r") as file, open(outputClassificationTableFile, "w") as outClass:
+    with open(orthogroupsFile, "r") as file, open(outputClassificationTableFile, "w") as outClass, open(outputDistributionSizeOrthogroupsTableFile, "w") as outDist:
         for line in file:
             line=line.rstrip()
             if line.startswith('Orthogroup'):
@@ -51,6 +59,8 @@ if os.path.isfile(orthogroupsFile):
                         numberSpeciesInOrthogroup=numberSpeciesInOrthogroup+1
                         numberProteinsInOrthogroup=numberProteinsInOrthogroup+len(fields[i].split(','))
                         # print(f'{fields[0]}\t{header[i]}\t{fields[i]}')
+                averageProteinsPerOrthogroup=numberProteinsInOrthogroup/numberSpeciesInOrthogroup
+                outDist.write(f'{fields[0]}\t{averageProteinsPerOrthogroup}\n')
                 if numberSpeciesInOrthogroup == numberSpecies:
                     #Hard-core groups
                     # print(f'Hard-core OG:{fields[0]}')
