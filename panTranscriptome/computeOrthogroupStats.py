@@ -8,7 +8,7 @@ from Bio import SeqIO
 parser= argparse.ArgumentParser(description='compute stats from orthogroups.tsv')
 parser.add_argument('--orthogroupsFile', metavar='orthogroupsFile', type=str, help='file with orthogroups.tsv generated with OrthoFinder2', required=True)
 parser.add_argument('--numberSpecies', metavar='numberSpecies', type=int, help='Number of species', required=True)
-parser.add_argument('--suffixOut', metavar='suffixOut', type=int, help='Suffix used to create output files', required=True)
+parser.add_argument('--suffixOut', metavar='suffixOut', type=str, help='Suffix used to create output files', required=True)
 args= parser.parse_args()
 
 
