@@ -1,6 +1,7 @@
 import argparse
 from genericpath import exists
 import os
+import matplotlib.pyplot as plt
 
 parser= argparse.ArgumentParser(description='compute stats from orthogroups.tsv')
 parser.add_argument('--orthogroupsFile', metavar='orthogroupsFile', type=str, help='file with orthogroups.tsv generated with OrthoFinder2', required=True)
@@ -16,6 +17,8 @@ suffixOut=args.suffixOut
 outputClassificationTableFile='panTranscriptomeClassificationTable_'+ args.suffixOut + '.tsv'
 outputDistributionSizeOrthogroupsTableFile='panTranscriptomeDistributionSizeOrthogroupsTable_'+ args.suffixOut + '.tsv'
 outputStatisticsOrthogroupsTableFile='panTranscriptomeStatisticsOrthogroups_'+ args.suffixOut + '.tsv'
+histogramsOutPNG='panTranscriptomeDistributionSizeOrthogroupsTable_'+ args.suffixOut + '.svg'
+histogramsOutSVG='panTranscriptomeDistributionSizeOrthogroupsTable_'+ args.suffixOut + '.png'
 numberCoreOrthogroups=0
 numberSoftCoreOrthogroups=0
 numberAccessoryOrthogroups=0
@@ -89,7 +92,16 @@ if os.path.isfile(orthogroupsFile):
                     exclusiveOrthogroups[fields[0]]=numberProteinsInOrthogroup
                     compositionOrthogroup(fields[1:numberSpecies+1],"Exclusive",fields[0],outClass)
         distributionSizeOrthogroups(averageProteinsPerOrthogroupDict,outDist)
-                
+        plt.figure(figsize=[10,8])
+        plt.hist(averageProteinsPerOrthogroupDict.values(), bins=100)
+        plt.xticks(fontsize=15)
+        plt.yticks(fontsize=15)
+        plt.xlabel('Average number of proteins per orthogroup',fontsize=15)
+        plt.ylabel('Frequency',fontsize=15)
+        plt.savefig(histogramsOutSVG, format="svg")
+        plt.savefig(histogramsOutPNG, format="png")
+
+
 numberCoreProteins=sum(coreOrthogroups.values())
 
 with open(outputStatisticsOrthogroupsTableFile, "w") as outStats:
