@@ -16,8 +16,9 @@ args= parser.parse_args()
 orthogroupsFile=args.orthogroupsFile
 numberSpecies=args.numberSpecies
 suffixOut=args.suffixOut
-outputClassificationTableFile='panTranscriptomeClassificationTable'+ args.suffixOut + '.tsv'
-outputDistributionSizeOrthogroupsTableFile='distributionSizeOrthogroupsTable'+ args.suffixOut + '.tsv'
+outputClassificationTableFile='panTranscriptomeClassificationTable_'+ args.suffixOut + '.tsv'
+outputDistributionSizeOrthogroupsTableFile='panTranscriptomeDistributionSizeOrthogroupsTable_'+ args.suffixOut + '.tsv'
+outputStatisticsOrthogroupsTableFile='panTranscriptomeStatisticsOrthogroups_'+ args.suffixOut + '.tsv'
 numberCoreOrthogroups=0
 numberSoftCoreOrthogroups=0
 numberAccessoryOrthogroups=0
@@ -27,6 +28,7 @@ numberSoftCoreProteins=0
 numberAccessoryProteins=0
 numberExclusiveProteins=0
 averageProteinsPerOrthogroup=0
+averageProteinsPerOrthogroupDict={}
 coreOrthogroups={}
 softCoreOrthogroups={}
 accessoryOrthogroups={}
@@ -39,7 +41,7 @@ def compositionOrthogroup (data, classification,og,fh):
             if id != '':
                 fh.write(f'{classification}\t{og}\t{id}\n')
 
-def distrubutionProteinsPerOrthogroup (data, fh):
+def distributionSizeOrthogroups (data,fh):
     for og in data:
         fh.write(f'{og}\t{data[og]}\n')
 
@@ -60,7 +62,7 @@ if os.path.isfile(orthogroupsFile):
                         numberProteinsInOrthogroup=numberProteinsInOrthogroup+len(fields[i].split(','))
                         # print(f'{fields[0]}\t{header[i]}\t{fields[i]}')
                 averageProteinsPerOrthogroup=numberProteinsInOrthogroup/numberSpeciesInOrthogroup
-                outDist.write(f'{fields[0]}\t{averageProteinsPerOrthogroup}\n')
+                averageProteinsPerOrthogroupDict[fields[0]]=averageProteinsPerOrthogroup
                 if numberSpeciesInOrthogroup == numberSpecies:
                     #Hard-core groups
                     # print(f'Hard-core OG:{fields[0]}')
@@ -89,13 +91,16 @@ if os.path.isfile(orthogroupsFile):
                     numberExclusiveProteins=numberExclusiveProteins+numberProteinsInOrthogroup
                     exclusiveOrthogroups[fields[0]]=numberProteinsInOrthogroup
                     compositionOrthogroup(fields[1:numberSpecies+1],"Exclusive",fields[0],outClass)
+        distributionSizeOrthogroups(averageProteinsPerOrthogroupDict,outDist)
                 
 numberCoreProteins=sum(coreOrthogroups.values())
-print(f'Number of groups present in all ({numberSpecies}) species:\t{numberCoreOrthogroups}\n')
-print(f'Number of proteins present in core groups:\t{numberCoreProteins}\n')
-print(f'Number of groups present in 90% of the species ({numberSpecies*0.9}):\t{numberSoftCoreOrthogroups}\n')
-print(f'Number of proteins present in soft-core groups:\t{numberSoftCoreProteins}\n')
-print(f'Number of accesory groups:\t{numberAccessoryOrthogroups}\n')
-print(f'Number of proteins present in accessory groups:\t{numberAccessoryProteins}\n')
-print(f'Number of exclusive groups:\t{numberExclusiveOrthogroups}\n')
-print(f'Number of proteins present in exclusive groups:\t{numberExclusiveProteins}\n')
+
+with open(outputStatisticsOrthogroupsTableFile, "w") as outStats:
+    outStats.write(f'Number of groups present in all ({numberSpecies}) species:\t{numberCoreOrthogroups}\n')
+    outStats.write(f'Number of proteins present in core groups:\t{numberCoreProteins}\n')
+    outStats.write(f'Number of groups present in 90% of the species ({numberSpecies*0.9}):\t{numberSoftCoreOrthogroups}\n')
+    outStats.write(f'Number of proteins present in soft-core groups:\t{numberSoftCoreProteins}\n')
+    outStats.write(f'Number of accesory groups:\t{numberAccessoryOrthogroups}\n')
+    outStats.write(f'Number of proteins present in accessory groups:\t{numberAccessoryProteins}\n')
+    outStats.write(f'Number of exclusive groups:\t{numberExclusiveOrthogroups}\n')
+    outStats.write(f'Number of proteins present in exclusive groups:\t{numberExclusiveProteins}\n')
