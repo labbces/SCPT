@@ -1,9 +1,6 @@
 import argparse
 from genericpath import exists
 import os
-import sys
-from Bio import SeqIO
-
 
 parser= argparse.ArgumentParser(description='compute stats from orthogroups.tsv')
 parser.add_argument('--orthogroupsFile', metavar='orthogroupsFile', type=str, help='file with orthogroups.tsv generated with OrthoFinder2', required=True)
