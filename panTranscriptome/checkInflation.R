@@ -156,3 +156,5 @@ ggplot(data_res, aes(x=Inflation,y=MeanScore))+
   geom_point()
 #mean(og_assessment_I1.2$Mean_score)
 #sps<-unique(orthogroups_I1.2$Species)
+write.table(data_res,"InflationvsDomainConsistency.txt",sep = "\t", row.names = FALSE)
+ggsave(filename = "InflationvsDomainConsistency.pdf", device = "pdf")
