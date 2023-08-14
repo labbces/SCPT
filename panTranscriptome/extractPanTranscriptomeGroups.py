@@ -147,8 +147,10 @@ plt.figure(figsize=(20,13))
 pan_trajectory_groups=sns.lineplot(y="NumberGroups", x = "NumberGenotypes", data = data, hue="Classification",marker="o", alpha=0.3, palette="tab10")
 fig1 = pan_trajectory_groups.get_figure()
 fig1.savefig("pan_trajectory_groups.png") 
+fig1.savefig("pan_trajectory_groups.pdf",format='pdf') 
 pan_trajectory_genes=sns.lineplot(y="NumberGenes", x = "NumberGenotypes", data = data, hue="Classification",marker="o", alpha=0.3, palette="tab10")
 fig2 = pan_trajectory_genes.get_figure()
 fig2.savefig("pan_trajectory_genes.png") 
+fig2.savefig("pan_trajectory_genes.pdf",format='pdf') 
 
 
