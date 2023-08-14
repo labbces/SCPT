@@ -38,6 +38,8 @@ def sample_random_selection(data, samples):
     return(my_sample, samples)
 
 with open(output_file, "w") as write_output_file:
+    write_output_file.write("pan_transcriptome_size\tgenes_pan\thard_core_transcriptome_size\tgenes_hard_core\tsoft_core_transcriptome_size\tgenes_soft_core\taccessory_transcriptome_size\tgenes_accessory\texclusive_transcriptome_size\tgenes_exclusive\tnumber_genotypes\tn_sample\n")
+
     for number_genotypes in range(1, data.shape[1]):
         max_n_sample = 3 
         #print(number_genotypes)
@@ -67,7 +69,7 @@ with open(output_file, "w") as write_output_file:
 
             for orthogroup in my_sample:
                 number_of_genotypes_in_orthogroups = 0
-                print(f'{n_sample} {orthogroup}')  
+#                print(f'{n_sample} {orthogroup}')  
                 if sum(orthogroup) > 0:
                     
                     genes_pan += sum(orthogroup)
@@ -96,16 +98,15 @@ with open(output_file, "w") as write_output_file:
 
             #print(f"pan_transcriptome_size: {pan_transcriptome_size} \t core_transcriptome_size: {core_transcriptome_size} \t number_genotypes: {number_genotypes} \t n_sample: {n_sample}")
 
-            write_output_file.write("pan_transcriptome_size:" + str(pan_transcriptome_size) + "\t"
-                                    + "genes_pan:" + str(genes_pan) + "\t"
-                                    + "hard_core_transcriptome_size:" + str(hard_core_transcriptome_size) + "\t"
-                                    + "genes_hard_core:" + str(genes_hard_core) + "\t"
-                                    + "soft_core_transcriptome_size:" +str(soft_core_transcriptome_size) + "\t"
-                                    + "genes_soft_core:" + str(genes_soft_core) + "\t"
-                                    + "accessory_transcriptome_size:" +str(accessory_transcriptome_size) + "\t"
-                                    + "genes_accessory:" + str(genes_accessory) + "\t"
-                                    + "exclusive_transcriptome_size:" + str(exclusive_transcriptome_size) + "\t"
-                                    + "genes_exclusive:" + str(genes_exclusive) + "\t"
-                                    + "number_genotypes:" + str(number_genotypes) + "\t"
-                                    + "n_sample:" + str(n_sample) + "\n")
-
+            write_output_file.write(str(pan_transcriptome_size) + "\t"
+                                    + str(genes_pan) + "\t"
+                                    + str(hard_core_transcriptome_size) + "\t"
+                                    + str(genes_hard_core) + "\t"
+                                    + str(soft_core_transcriptome_size) + "\t"
+                                    + str(genes_soft_core) + "\t"
+                                    + str(accessory_transcriptome_size) + "\t"
+                                    + str(genes_accessory) + "\t"
+                                    + str(exclusive_transcriptome_size) + "\t"
+                                    + str(genes_exclusive) + "\t"
+                                    + str(number_genotypes) + "\t"
+                                    + str(n_sample) + "\n")
