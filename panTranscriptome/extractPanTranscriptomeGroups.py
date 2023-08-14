@@ -45,7 +45,7 @@ with open(output_file, "w") as write_output_file:
     write_output_file.write("NumberGroups\tNumberGenes\tClassification\tNumberGenotypes\tSample\n")
 
     for number_genotypes in range(1, data.shape[1]):
-        max_n_sample = 3 
+        max_n_sample = 20
         #print(number_genotypes)
         samples = []
 
@@ -144,6 +144,11 @@ with open(output_file, "w") as write_output_file:
 
 data = pd.read_csv(output_file, delimiter="\t")
 plt.figure(figsize=(20,13))
-pan_trajectory=sns.lineplot(y="NumberGroups", x = "NumberGenotypes", data = data, hue="Classification",marker="o", alpha=0.3, palette="tab10")
-fig = pan_trajectory.get_figure()
-fig.savefig("pan_trajectory.png") 
+pan_trajectory_groups=sns.lineplot(y="NumberGroups", x = "NumberGenotypes", data = data, hue="Classification",marker="o", alpha=0.3, palette="tab10")
+fig1 = pan_trajectory_groups.get_figure()
+fig1.savefig("pan_trajectory_groups.png") 
+pan_trajectory_genes=sns.lineplot(y="NumberGenes", x = "NumberGenotypes", data = data, hue="Classification",marker="o", alpha=0.3, palette="tab10")
+fig2 = pan_trajectory_genes.get_figure()
+fig2.savefig("pan_trajectory_genes.png") 
+
+
