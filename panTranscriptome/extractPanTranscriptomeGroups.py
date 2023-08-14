@@ -118,7 +118,7 @@ with open(output_file, "w") as write_output_file:
                                     + str(n_sample) + "\n"
                                     + str(hard_core_transcriptome_size) + "\t"
                                     + str(genes_hard_core) + "\t"
-                                    + "Core-transcriptome" + "\tn"
+                                    + "Core-transcriptome" + "\t"
                                     + str(number_genotypes) + "\t"
                                     + str(n_sample) + "\n"
                                     + str(soft_core_transcriptome_size) + "\t"
