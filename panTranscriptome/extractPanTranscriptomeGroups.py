@@ -136,7 +136,7 @@ with open(output_file, "w") as write_output_file:
                                     + str(n_sample) + "\n"
                                     + str(exclusive_transcriptome_size) + "\t"
                                     + str(genes_exclusive) + "\t"
-                                    + "Acc-transcriptome" + "\t"
+                                    + "Exc-transcriptome" + "\t"
                                     + str(number_genotypes) + "\t"
                                     + str(n_sample) + "\n")
 
