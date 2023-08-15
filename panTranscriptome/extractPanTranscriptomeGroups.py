@@ -33,7 +33,14 @@ outfigure_Genes_png="Pan-Transcriptome_Trajectory_Genes_" + str(min_fraction) + 
 sys.setrecursionlimit(10**6)
 
 data = pd.read_csv(input_file, delimiter='\t', header=0, index_col=0)
-#print(data.shape)
+
+print(f'The dimensions of the input dataset are: {data.shape}')
+if 'Total' in data.columns:
+    sys.stderr.write("The input data has a column names \"Total\", this is not expected and can generate some problems. Column will be removed!")
+    data.drop('Total', axis=1, inplace=True)
+    print(f'The dimensions of the input dataset, after removing the Total column, are: {data.shape}')
+
+print(f'The dimensions of the input dataset, after removing the Total column, are: {data.shape}')
 
 def sample_random_selection(data, samples):
     my_sample = data.sample(number_genotypes, axis='columns', replace=False)
