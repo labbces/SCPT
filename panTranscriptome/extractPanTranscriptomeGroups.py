@@ -6,9 +6,6 @@ from math import factorial
 import sys
 import argparse
 import os.path
-#from matplotlib import markers, style
-#from matplotlib import pyplot as plt
-#import seaborn as sns
 from plotnine import ggplot, aes, geom_jitter, geom_smooth, theme_bw, scale_y_log10, labs, save_as_pdf_pages, theme
 
 # creating arguments
@@ -48,7 +45,6 @@ def sample_random_selection(data, samples):
     my_sample = data.sample(number_genotypes, axis='columns', replace=False)
     
     my_selection = sorted(list(my_sample.columns))
-    #print(f"sample dentro da funcao: {samples}, my_selection: {my_selection}; my_sample columns: {sorted(list(my_sample.columns))}")
     if my_selection in samples:
         sample_random_selection(data, samples)
     else:
@@ -56,18 +52,15 @@ def sample_random_selection(data, samples):
     return(my_sample, samples)
 
 with open(output_file, "w") as write_output_file:
-#    write_output_file.write("pan_transcriptome_size\tgenes_pan\thard_core_transcriptome_size\tgenes_hard_core\tsoft_core_transcriptome_size\tgenes_soft_core\taccessory_transcriptome_size\tgenes_accessory\texclusive_transcriptome_size\tgenes_exclusive\tnumber_genotypes\tn_sample\n")
     write_output_file.write("NumberGroups\tNumberGenes\tClassification\tNumberGenotypes\tSample\n")
 
     for number_genotypes in range(1, data.shape[1]):
         max_n_sample = 20
-        #print(number_genotypes)
         samples = []
 
         max_number_of_samples = int(factorial(data.shape[1]) / factorial((data.shape[1] - number_genotypes)))
         if max_number_of_samples < max_n_sample:
             max_n_sample = max_number_of_samples
-        #print(max_n_sample)
 
         for n_sample in range(0, max_n_sample):
             pan_transcriptome_size = 0
@@ -80,15 +73,11 @@ with open(output_file, "w") as write_output_file:
             genes_soft_core = 0
             genes_accessory = 0
             genes_exclusive = 0
-            #print(f"samples: {samples}; n_sample: {n_sample}" )
             my_sample,samples = sample_random_selection(data, samples)
             my_sample = np.array(my_sample)
-            #print(f'number genotypes: {number_genotypes}; sample number: {n_sample}; genotypes: {list(my_sample.columns)}')
-            #print(my_sample)
 
             for orthogroup in my_sample:
                 number_of_genotypes_in_orthogroups = 0
-#                print(f'{n_sample} {orthogroup}')  
                 if sum(orthogroup) > 0:
                     genes_pan += sum(orthogroup)
                     pan_transcriptome_size += 1
@@ -112,20 +101,6 @@ with open(output_file, "w") as write_output_file:
                     else:
                         print("Case not contemplated, check input\n")
 
-            #print(f"pan_transcriptome_size: {pan_transcriptome_size} \t core_transcriptome_size: {core_transcriptome_size} \t number_genotypes: {number_genotypes} \t n_sample: {n_sample}")
-
-#            write_output_file.write(str(pan_transcriptome_size) + "\t"
-#                                    + str(genes_pan) + "\t"
-#                                    + str(hard_core_transcriptome_size) + "\t"
-#                                    + str(genes_hard_core) + "\t"
-#                                    + str(soft_core_transcriptome_size) + "\t"
-#                                    + str(genes_soft_core) + "\t"
-#                                    + str(accessory_transcriptome_size) + "\t"
-#                                    + str(genes_accessory) + "\t"
-#                                    + str(exclusive_transcriptome_size) + "\t"
-#                                    + str(genes_exclusive) + "\t"
-#                                    + str(number_genotypes) + "\t"
-#                                    + str(n_sample) + "\n")
             write_output_file.write(str(pan_transcriptome_size)+ "\t"
                                     + str(genes_pan) + "\t"
                                     + "Pan-transcriptome" + "\t"
@@ -155,7 +130,6 @@ with open(output_file, "w") as write_output_file:
 
 
 data = pd.read_csv(output_file, delimiter="\t")
-#plt.figure(figsize=(20,13))
 title_text_groups="Pan-Transcriptome Trajectory " + str(min_fraction) + " -- Groups"
 title_text_genes ="Pan-Transcriptome Trajectory " + str(min_fraction) + " -- Genes"
 
@@ -168,14 +142,3 @@ fig2.save(outfigure_Genes_png, dpi=600, height=13, width=20, units = 'in')
 
 plots=[fig1, fig2]
 save_as_pdf_pages(plots,filename=outfigure_pdf)
-#pan_trajectory_groups=sns.lineplot(y="NumberGroups", x = "NumberGenotypes", data = data, hue="Classification",marker="o", alpha=0.3, palette="tab10").set(title=title_text_groups)
-#fig1 = pan_trajectory_groups[0].get_figure()
-#fig1.savefig(outfigure_Groups_png)
-#fig1.savefig(outfigure_Groups_pdf,format='pdf') 
-#plt.figure(figsize=(20,13))
-#pan_trajectory_genes=sns.lineplot(y="NumberGenes", x = "NumberGenotypes", data = data, hue="Classification",marker="o", alpha=0.3, palette="tab10").set(title=title_text_genes)
-#fig2 = pan_trajectory_genes[0].get_figure()
-#fig2.savefig(outfigure_Genes_png) 
-#fig2.savefig(outfigure_Genes_pdf,format='pdf') 
-#
-#
