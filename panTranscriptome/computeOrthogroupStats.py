@@ -34,12 +34,12 @@ softCoreOrthogroups={}
 accessoryOrthogroups={}
 exclusiveOrthogroups={}
 
-def compositionOrthogroup (data, classification,og,fh):
-    for line in data:
-        for id in line.split(','):
+def compositionOrthogroup (data, classification,og,sps,fh):
+    for i in range(0,len(data)):
+        for id in data[i].split(','):
             id=id.replace(' ','')
             if id != '':
-                fh.write(f'{classification}\t{og}\t{id}\n')
+                fh.write(f'{classification}\t{og}\t{sps[i]}\t{id}\n')
 
 def distributionSizeOrthogroups (data,fh):
     for og in data:
@@ -69,28 +69,28 @@ if os.path.isfile(orthogroupsFile):
                     numberCoreOrthogroups=numberCoreOrthogroups+1
                     numberCoreProteins=numberCoreProteins+numberProteinsInOrthogroup
                     coreOrthogroups[fields[0]]=numberProteinsInOrthogroup
-                    compositionOrthogroup(fields[1:numberSpecies+1],"Hard-core",fields[0],outClass)
+                    compositionOrthogroup(fields[1:numberSpecies+1],"Hard-core",fields[0],header[1:numberSpecies+1],outClass)
                 if numberSpeciesInOrthogroup >= numberSpecies*0.9:
                     #Soft-core groups
                     # print(f'Soft-core OG:{fields[0]}')
                     numberSoftCoreOrthogroups=numberSoftCoreOrthogroups+1
                     numberSoftCoreProteins=numberSoftCoreProteins+numberProteinsInOrthogroup
                     softCoreOrthogroups[fields[0]]=numberProteinsInOrthogroup
-                    compositionOrthogroup(fields[1:numberSpecies+1],"Soft-core",fields[0],outClass)
+                    compositionOrthogroup(fields[1:numberSpecies+1],"Soft-core",fields[0],header[1:numberSpecies+1],outClass)
                 if numberSpeciesInOrthogroup > 1 and numberSpeciesInOrthogroup < numberSpecies*0.9 :
                     #Accesory groups
                     # print(f'Accesory-core OG:{fields[0]}')
                     numberAccessoryOrthogroups=numberAccessoryOrthogroups+1
                     numberAccessoryProteins=numberAccessoryProteins+numberProteinsInOrthogroup
                     accessoryOrthogroups[fields[0]]=numberProteinsInOrthogroup
-                    compositionOrthogroup(fields[1:numberSpecies+1],"Accessory",fields[0],outClass)
+                    compositionOrthogroup(fields[1:numberSpecies+1],"Accessory",fields[0],header[1:numberSpecies+1],outClass)
                 if numberSpeciesInOrthogroup == 1:
                     #Exclusive groups
                     # print(f'Exclusive OG:{fields[0]}')
                     numberExclusiveOrthogroups=numberExclusiveOrthogroups+1
                     numberExclusiveProteins=numberExclusiveProteins+numberProteinsInOrthogroup
                     exclusiveOrthogroups[fields[0]]=numberProteinsInOrthogroup
-                    compositionOrthogroup(fields[1:numberSpecies+1],"Exclusive",fields[0],outClass)
+                    compositionOrthogroup(fields[1:numberSpecies+1],"Exclusive",fields[0],header[1:numberSpecies+1],outClass)
         distributionSizeOrthogroups(averageProteinsPerOrthogroupDict,outDist)
         plt.figure(figsize=[10,8])
         plt.hist(averageProteinsPerOrthogroupDict.values(), bins=100)
