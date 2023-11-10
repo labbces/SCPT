@@ -1,4 +1,4 @@
-from Bio import SeqIo 
+from Bio import SeqIO 
 import sqlite3 
 
 #Variavel do arquivo FASTA 
