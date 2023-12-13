@@ -20,5 +20,5 @@
 sqlite3 bancosqlite.db < biosqldb-sqlite.sql 
 ```
 
-
+## Uso dos Scripts 
 
