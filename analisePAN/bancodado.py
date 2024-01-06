@@ -4,12 +4,12 @@ import sqlite3
 from BioSQL import BioSeqDatabase
 
 #minSeq4Commit
-minSeq4Commit = 1000
+minSeq4Commit = 10
 
 #Variavel dos arquivos
-sequences_CDS = "/Storage/data1/jorge.munoz/glowing-green/longest/CDS/data/all_CDS_idsok.fasta"
-sequences_protein = "caminho/proteins.fasta"
-orthogrups_tvs = "/Storage/data1/jorge.munoz/glowing-green/longest/transcripts/data/Orthogroups_for_longest_trans.tsv"
+sequences_CDS = "/home/hppp123/IC/cds_teste.fasta"
+sequences_protein = "/home/hppp123/IC/protein_teste.fasta"
+orthogrups_tvs = "/home/hppp123/IC/Orthogrups_teste.tsv"
 
 
 
@@ -36,7 +36,7 @@ cursor.execute("""
 #TABELA orthogruops 
 cursor.execute("""
         CREATE TABLE IF NOT EXISTS orthogrups
-        (id_grupo VARCHAR(255), id_protein TEXT)
+        (id_grupo VARCHAR(255), id_protein VARCHAR(255))
 """)
 
 # Define uma função para inserir sequências no banco de dados
@@ -50,16 +50,17 @@ countSeq =  0
 
 # Função para procesas o arquivo TSV e inserir no banco 
 
-def process_tvs(orthogrups_tvs, orthogrups ):
+with open(orthogrups_tvs, 'r') as file:
         countSeq = 0 
-        with open(orthogrups_tvs, 'r') as file:
-                tvs_reader = csv.reader(file, delimiter='\t')
-                for line in tvs_reader:
-                        countSeq +=1
-                        if countSeq % minSeq4Commit ==0: 
-                                con.commit()
-                        id_grupo, id_protein = line 
-                        insert_sequence(cursor, "orthogrups",id_grupo, id_protein)
+        tvs_reader = csv.reader(file, delimiter='\t')
+        for line in tvs_reader:
+                countSeq +=1
+                if countSeq % minSeq4Commit ==0: 
+                        con.commit()
+                id_grupo, id_protein = line  
+                if id_grupo.startswith('Orthologue Group ID'):
+                        continue 
+                cursor.execute("INSERT INTO orthogrups (id_grupo, id_protein) VALUES (?, ?)", (id_grupo, id_protein))
 
 
 #Lendo e inserindo sequências do arquivo CDS 
