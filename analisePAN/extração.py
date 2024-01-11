@@ -23,14 +23,14 @@ cursor.execute(protein_consulta)
 protein_results = cursor.fetchall()
 
 
-""" cds_consulta = '''
+cds_consulta = '''
 SELECT orthogrups.id_protein , sequences_cds.id
 FROM orthogrups
 INNER JOIN sequences_cds ON orthogrups.id_protein = sequences_cds.id
-''' """
+'''
 
-""" cursor.execute(cds_consulta)
-cds_results = cursor.fetchall() """
+cursor.execute(cds_consulta)
+cds_results = cursor.fetchall()
 
 protein_records = []
 for result in protein_results:
@@ -41,14 +41,14 @@ for result in protein_results:
 with open(protein_file, 'w') as protein_fasta:
         SeqIO.write(protein_records, protein_fasta, 'fasta')
 
-""" cds_records = []
+cds_records = []
 for result in cds_results:
     id_protein, sequence = result
     record = SeqRecord(sequence, id=str(id_protein))
     cds_records.append(record)
 
 with open(cds_file, 'w') as cds_fasta:
-    SeqIO.write(cds_records, cds_fasta, 'fasta') """
+    SeqIO.write(cds_records, cds_fasta, 'fasta')
 
 con.commit()
 con.close()

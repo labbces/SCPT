@@ -5,11 +5,10 @@ from BioSQL import BioSeqDatabase
 
 #minSeq4Commit
 minSeq4Commit = 10
-
 #Variavel dos arquivos
-sequences_CDS = "/home/hppp123/IC/cds_teste.fasta"
-sequences_protein = "/home/hppp123/IC/protein_teste.fasta"
-orthogrups_tvs = "/home/hppp123/IC/Orthogrups_teste.tsv"
+sequences_CDS = "/home/hppp123/IC/SCPT/analisePAN/testes.fasta/CDS.teste.fasta"
+sequences_protein = "/home/hppp123/IC/SCPT/analisePAN/testes.fasta/protein_teste.fasta"
+orthogrups_tvs = "/home/hppp123/IC/SCPT/analisePAN/testes.fasta/teste.ortho.fasta"
 
 
 
