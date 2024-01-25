@@ -8,6 +8,7 @@ from Bio.Seq import Seq
 db_file = "mybiosql.db"
 protein_file = "/home/hppp123/IC/orto_protein.fas"
 cds_file = "/home/hppp123/IC/orto_CDS.fas"
+
 minSeq4Commit = 10
 
 
@@ -46,8 +47,8 @@ for result in protein_results:
 with open(protein_file, 'w') as protein_fasta:
     countSeq = 0
     SeqIO.write(protein_records, protein_fasta, 'fasta')
-    seq_count += 1
-    if seq_count % min_seq_for_commit == 0:
+    countSeq += 1
+    if countSeq % minSeq4Commit  == 0:
         con.commit()
 
 
@@ -62,8 +63,8 @@ for result in cds_results:
 with open(cds_file, 'w') as cds_fasta:
     countSeq = 0
     SeqIO.write(cds_records, cds_fasta, 'fasta')
-    seq_count += 1
-    if seq_count % min_seq_for_commit == 0:
+    countSeq += 1
+    if countSeq % minSeq4Commit == 0:
         con.commit()
 
 
