@@ -17,7 +17,7 @@ cursor = con.cursor()
 
 #Consulta para recuperar as sequencias de proteinas e CDS
 protein_consulta = '''
-SELECT orthogrups.id_protein , sequences_protein.id
+SELECT sequences_protein.id, sequences_protein.sequence
 FROM orthogrups
 INNER JOIN sequences_protein ON orthogrups.id_protein = sequences_protein.id
 '''
@@ -25,21 +25,14 @@ INNER JOIN sequences_protein ON orthogrups.id_protein = sequences_protein.id
 cursor.execute(protein_consulta)
 protein_results = cursor.fetchall()
 
-
-cds_consulta = '''
-SELECT orthogrups.id_protein , sequences_cds.id
-FROM orthogrups
-INNER JOIN sequences_cds ON orthogrups.id_protein = sequences_cds.id
-'''
-
-cursor.execute(cds_consulta)
-cds_results = cursor.fetchall()
-
 # SeqRecord para sequencia de proteinas 
 protein_records = []
 
 for result in protein_results:
+    #print("Result:", result)
     id_protein, sequence = result
+    print("ID Protein:", id_protein)
+    print("Sequence:", sequence)
     record = SeqRecord(Seq(sequence), id=str(id_protein))
     protein_records.append(record)
 
@@ -51,6 +44,16 @@ with open(protein_file, 'w') as protein_fasta:
      countSeq += 1
      if countSeq % minSeq4Commit  == 0:
         con.commit()
+
+
+cds_consulta = '''
+SELECT sequences_cds.id, sequences_cds.sequence
+FROM orthogrups
+INNER JOIN sequences_cds ON orthogrups.id_protein = sequences_cds.id
+'''
+
+cursor.execute(cds_consulta)
+cds_results = cursor.fetchall()
 
 cds_records = []
 
