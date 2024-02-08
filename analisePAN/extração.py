@@ -29,11 +29,10 @@ protein_results = cursor.fetchall()
 protein_records = []
 
 for result in protein_results:
-    #print("Result:", result)
     id_protein, sequence = result
-    print("ID Protein:", id_protein)
-    print("Sequence:", sequence)
-    record = SeqRecord(Seq(sequence), id=str(id_protein))
+    #print("ID Protein:", id_protein)
+    #print("Sequence:", sequence)
+    record = SeqRecord(Seq(sequence), id=str(id_protein), description=str(id_protein))
     protein_records.append(record)
 
 #Escrever as sequencias nos arquivos 
@@ -60,7 +59,7 @@ cds_records = []
 #SeqRecord para as sequencias de CDS
 for result in cds_results:
     id_protein, sequence = result
-    record = SeqRecord(Seq(sequence), id=str(id_protein))
+    record = SeqRecord(Seq(sequence), id=str(id_protein), description=str(id_cds))
     cds_records.append(record)
 
 #Escrever as sequencias nos arquivos 
