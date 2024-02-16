@@ -78,7 +78,7 @@ for record in SeqIO.parse(sequences_protein, "fasta"):
                 con.commit()
         seq_id = record.id  # Obtém o ID da sequência 
         seq_sequence = record.seq  # Obtém a sequência
-        insert_sequence(cursor, "sequences_protein", seq_id, seq_sequence) # Insere a sequência no banco de dados
+        insert_sequ(cursor, "sequences_protein", seq_id, seq_sequence) # Insere a sequência no banco de dados
 
 con.commit()  # Confirma alteração 
 con.close() # Fechar conexão com banco

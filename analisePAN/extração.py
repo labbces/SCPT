@@ -27,12 +27,12 @@ HAVING COUNT(id_protein) > 4
 cursor.execute(orthogroup_consulta)
 orthogroup_results = cursor.fetchall()
 
-print("Orthogroup IDs with more than 4 sequences:")
-print(orthogroup_results)
+#print("Orthogroup IDs com mais de 4 seq:")
+#print(orthogroup_results)
 
 for orthogroup in orthogroup_results:
     id_grupo = orthogroup[0]
-    print(f"Processing Orthogroup: {id_grupo}")
+    #print(f"Orthogrupo a ser processado: {id_grupo}")
 
     # Consulta para recuperar os identificadores de proteínas do grupo
     protein_consulta = '''
@@ -43,8 +43,8 @@ for orthogroup in orthogroup_results:
     cursor.execute(protein_consulta)
     protein_results = cursor.fetchall()
 
-    print(f"Protein Sequences for Orthogroup {id_grupo}:")
-    print(protein_results) 
+    #print(f"Protein Sequences for Orthogroup {id_grupo}:")
+    #print(protein_results) 
 
     protein_records = []
 
@@ -58,7 +58,7 @@ for orthogroup in orthogroup_results:
         if countSeq % minSeq4Commit ==0: 
              con.commit()
 
-    print(f"Number of Protein Records: {len(protein_records)}")  
+    #print(f"NUmero de Record de Proteinas: {len(protein_records)}")  
 
     # Escrever as sequências de proteínas no arquivo
     protein_file = f"/home/hppp123/IC/SCPT/analisePAN/Orthogrups_teste/OP_{id_grupo}.fas"
@@ -87,7 +87,7 @@ for orthogroup in orthogroup_results:
         if countSeq % minSeq4Commit ==0:
             con.commit()
 
-    print(f"Number of CDS Records: {len(cds_records)}")
+    #print(f"Numero de Record de CDS: {len(cds_records)}")
 
     # Escrever as sequências de CDS no arquivo
     cds_file = f"/home/hppp123/IC/SCPT/analisePAN/Orthogrups_teste/OCDS_{id_grupo}.fas"
