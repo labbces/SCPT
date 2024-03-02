@@ -36,7 +36,7 @@ cursor.execute("""
 #TABELA orthogruops 
 cursor.execute("""
         CREATE TABLE IF NOT EXISTS orthogrups
-        (id_grupo VARCHAR(255), id_protein VARCHAR(255))
+        (orthogroup VARCHAR(255), id_protein VARCHAR(255))
 """)
 
 # Define uma função para inserir sequências no banco de dados
@@ -57,10 +57,10 @@ with open(orthogrups_tvs, 'r') as file:
                 countSeq +=1
                 if countSeq % minSeq4Commit ==0: 
                         con.commit()
-                id_grupo, id_protein = line  
-                if id_grupo.startswith('Orthologue Group ID'):
+                orthogroup, id_protein = line  
+                if orthogroup.startswith('Orthologue Group ID'):
                         continue 
-                cursor.execute("INSERT INTO orthogrups (id_grupo, id_protein) VALUES (?, ?)", (id_grupo, id_protein))
+                cursor.execute("INSERT INTO orthogrups (orthogroup, id_protein) VALUES (?, ?)", (orthogroup, id_protein))
 
  
 #Lendo e inserindo sequências do arquivo CDS 

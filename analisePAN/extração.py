@@ -5,8 +5,9 @@ import sqlite3
 from Bio.Seq import Seq
 
 # Variavel para os caminhos 
-protein_file = "/home/hppp123/IC/SCPT/analisePAN/Orthogrups_Proteinas/OP_{id_grupo}.fasta"
-cds_file = "/home/hppp123/IC/SCPT/analisePAN/Orthogrups_CDS/OCDS_{id_grupo}.fasta"
+seq_CDS = "/Storage/data1/hellen.silva/db-extraction/arquivos_db/all_CDS_idsok.fasta "
+seq_OP = "/Storage/data1/hellen.silva/db-extraction/arquivos_db/PanTranscriptome_2023.proteins.gz"
+orthogrups_tvs = "/Storage/data1/hellen.silva/db-extraction/arquivos_db/Orthogroups_for_longest_trans.tsv"
 
 
 minSeq4Commit = 10
@@ -18,9 +19,9 @@ cursor = con.cursor()
 
 # Consulta para recuperar os grupos de ortólogos com mais de 4 sequências
 orthogroup_consulta = '''
-SELECT id_grupo
+SELECT orthogroup
 FROM orthogrups
-GROUP BY id_grupo
+GROUP BY orthogroup
 HAVING COUNT(id_protein) > 3
 '''
 
@@ -31,23 +32,23 @@ orthogroup_results = cursor.fetchall()
 print(orthogroup_results)
 
 for orthogroup in orthogroup_results:
-    id_grupo = orthogroup[0]
-    #print(f"Orthogrupo a ser processado: {id_grupo}")
+    orthogroup = orthogroup[0]
+    #print(f"Orthogrupo a ser processado: {orthogroup}")
 
     # Consulta para recuperar os identificadores de proteínas do grupo
     protein_consulta = f'''
     SELECT sequences_protein.id, sequences_protein.sequence
     FROM orthogrups
     INNER JOIN sequences_protein ON orthogrups.id_protein = sequences_protein.id
-    WHERE orthogrups.id_grupo = '{id_grupo}'
+    WHERE orthogrups.orthogroup = '{orthogroup}'
     '''
 
 
     cursor.execute(protein_consulta)
     protein_results = cursor.fetchall()
 
-    #print(f"Protein Sequences for Orthogroup {id_grupo}:")
-    #print(protein_results) 
+    #print(f"Sequencias de proteinas Orthogroup {orthogroup}:")
+
 
     protein_records = []
 
@@ -64,7 +65,7 @@ for orthogroup in orthogroup_results:
     #print(f"Numero de Record de Proteinas: {len(protein_records)}")  
 
     # Escrever as sequências de proteínas no arquivo
-    protein_file = f"/home/hppp123/IC/SCPT/analisePAN/Orthogrups_Proteinas/OP_{id_grupo}.fasta"
+    protein_file = f"/home/hppp123/IC/SCPT/analisePAN/Orthogrups_Proteinas/OP_{orthogroup}.fasta"
     with open(protein_file, 'w') as protein_fasta:
         SeqIO.write(protein_records, protein_fasta, 'fasta')
 
@@ -72,7 +73,7 @@ for orthogroup in orthogroup_results:
     SELECT sequences_cds.id, sequences_cds.sequence
     FROM orthogrups
     INNER JOIN sequences_cds ON orthogrups.id_protein = sequences_cds.id
-    WHERE orthogrups.id_grupo = '{id_grupo}'
+    WHERE orthogrups.orthogroup = '{orthogroup}'
     '''
 
     cursor.execute(cds_consulta)
@@ -94,7 +95,7 @@ for orthogroup in orthogroup_results:
     #print(f"Numero de Record de CDS: {len(cds_records)}")
 
     # Escrever as sequências de CDS no arquivo
-    cds_file = f"/home/hppp123/IC/SCPT/analisePAN/Orthogrups_CDS/OCDS_{id_grupo}.fasta"
+    cds_file = f"/home/hppp123/IC/SCPT/analisePAN/Orthogrups_CDS/OCDS_{orthogroup}.fasta"
     with open(cds_file, 'w') as cds_fasta:
         SeqIO.write(cds_records, cds_fasta, 'fasta')
         
