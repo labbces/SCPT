@@ -5,8 +5,8 @@ import sqlite3
 from Bio.Seq import Seq
 
 # Variavel para os caminhos 
-seq_CDS = "/Storage/data1/hellen.silva/db-extraction/arquivos_db/all_CDS_idsok.fasta "
-seq_OP = "/Storage/data1/hellen.silva/db-extraction/arquivos_db/PanTranscriptome_2023.proteins.gz"
+seq_CDS = "/Storage/data1/hellen.silva/db-extraction/Orthogrups_CDS/{orthogroup}.cds.fa"
+seq_OP = "/Storage/data1/hellen.silva/db-extraction/Orthogrups_Proteinas/{orthogroup}.fa"
 orthogrups_tvs = "/Storage/data1/hellen.silva/db-extraction/arquivos_db/Orthogroups_for_longest_trans.tsv"
 
 
@@ -65,7 +65,7 @@ for orthogroup in orthogroup_results:
     #print(f"Numero de Record de Proteinas: {len(protein_records)}")  
 
     # Escrever as sequências de proteínas no arquivo
-    protein_file = f"/home/hppp123/IC/SCPT/analisePAN/Orthogrups_Proteinas/OP_{orthogroup}.fasta"
+    protein_file = f"/Storage/data1/hellen.silva/db-extraction/Orthogrups_Proteinas/{orthogroup}.fa"
     with open(protein_file, 'w') as protein_fasta:
         SeqIO.write(protein_records, protein_fasta, 'fasta')
 
@@ -95,7 +95,7 @@ for orthogroup in orthogroup_results:
     #print(f"Numero de Record de CDS: {len(cds_records)}")
 
     # Escrever as sequências de CDS no arquivo
-    cds_file = f"/home/hppp123/IC/SCPT/analisePAN/Orthogrups_CDS/OCDS_{orthogroup}.fasta"
+    cds_file = f"/Storage/data1/hellen.silva/db-extraction/Orthogrups_CDS/{orthogroup}.cds.fa"
     with open(cds_file, 'w') as cds_fasta:
         SeqIO.write(cds_records, cds_fasta, 'fasta')
         
