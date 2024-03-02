@@ -3,13 +3,13 @@ from Bio import SeqIO
 import sqlite3 
 from BioSQL import BioSeqDatabase
 
-#minSeq4Commit
+#Commit
 minSeq4Commit = 10
 
 #Variavel dos arquivos
-seq_CDS = "/home/hppp123/IC/SCPT/analisePAN/testes.fasta/CDS.teste.fasta"
-seq_OP = "/home/hppp123/IC/SCPT/analisePAN/testes.fasta/proteinas.teste.fasta"
-orthogrups_tvs = "/home/hppp123/IC/SCPT/analisePAN/testes.fasta/teste.orthogrupo"
+seq_CDS = "/Storage/data1/hellen.silva/db-extraction/arquivos_db/all_CDS_idsok.fasta "
+seq_OP = "/Storage/data1/hellen.silva/db-extraction/arquivos_db/PanTranscriptome_2023.proteins.gz"
+orthogrups_tvs = "/Storage/data1/hellen.silva/db-extraction/arquivos_db/Orthogroups_for_longest_trans.tsv"
 
 
 
