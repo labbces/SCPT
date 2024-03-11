@@ -4,7 +4,7 @@ import sqlite3
 from BioSQL import BioSeqDatabase
 
 #Commit
-minSeq4Commit = 10
+minSeq4Commit = 100
 
 #Variavel dos arquivos
 seq_CDS = "/Storage/data1/hellen.silva/db-extraction/arquivos_db/all_CDS_idsok.fasta "
@@ -42,7 +42,7 @@ cursor.execute("""
 # Define uma função para inserir sequências no banco de dados
 
 def insert_sequence(cursor, table_name, seq_id, seq_sequence):
-        seq_sequence_str = str(seq_sequence)
+        seq_sequence_str =">" + seq_id + "\n" +  str(seq_sequence).rstrip('\n')
         cursor.execute("INSERT INTO {} (id, sequence) VALUES (?, ?)".format(table_name), (seq_id, seq_sequence_str))
 
 
@@ -76,10 +76,11 @@ for record in SeqIO.parse(seq_CDS, "fasta"):
 
 
 #Lendo e inserindo sequências do arquivo de proteínas 
-for record in SeqIO.parse(seq_OP, "fasta"):
-        countSeq += 1 
-        if countSeq % minSeq4Commit ==0:
-                con.commit()
+with gzip.open(seq_OP, "rt") as file:
+        for record in SeqIO.parse(seq_OP, "fasta"):
+                countSeq += 1 
+                if countSeq % minSeq4Commit ==0:
+                        con.commit()
         seq_id = record.id  # Obtém o ID da sequência 
         seq_sequence = record.seq  # Obtém a sequência
         insert_sequence(cursor, "sequences_protein", seq_id, seq_sequence) # Insere a sequência no banco de dados
