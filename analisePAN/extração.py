@@ -5,9 +5,10 @@ import sqlite3
 from Bio.Seq import Seq
 
 # Variavel para os caminhos 
-seq_CDS = "/Storage/data1/hellen.silva/db-extraction/Orthogrups_CDS/{orthogroup}.cds.fa"
-seq_OP = "/Storage/data1/hellen.silva/db-extraction/Orthogrups_Proteinas/{orthogroup}.fa"
-orthogrups_tvs = "/Storage/data1/hellen.silva/db-extraction/arquivos_db/Orthogroups_for_longest_trans.tsv"
+#I am commenting the folloing three lines as they are not being used.
+#seq_CDS = "/Storage/data1/hellen.silva/db-extraction/Orthogrups_CDS/{orthogroup}.cds.fa"
+#seq_OP = "/Storage/data1/hellen.silva/db-extraction/Orthogrups_Proteinas/{orthogroup}.fa"
+#orthogrups_tvs = "/Storage/data1/hellen.silva/db-extraction/arquivos_db/Orthogroups_for_longest_trans.tsv"
 
 
 minSeq4Commit = 10
@@ -59,8 +60,9 @@ for orthogroup in orthogroup_results:
         record = SeqRecord(Seq(sequence), id=str(id_protein), description=str(id_protein))
         protein_records.append(record)
         countSeq +=1
-        if countSeq % minSeq4Commit ==0: 
-             con.commit()
+        #As we are not writing to the DB, we do not need to commit, so I am commenting the following two lines
+        #if countSeq % minSeq4Commit ==0: 
+        #     con.commit()
 
     #print(f"Numero de Record de Proteinas: {len(protein_records)}")  
 
@@ -89,8 +91,9 @@ for orthogroup in orthogroup_results:
         record = SeqRecord(Seq(sequence), id=str(id_cds), description=str(id_cds))
         cds_records.append(record)
         countSeq +=1
-        if countSeq % minSeq4Commit ==0:
-            con.commit()
+        #As we are not writing to the DB, we do not need to commit, so I am commenting the following two lines
+        #if countSeq % minSeq4Commit ==0:
+        #    con.commit()
 
     #print(f"Numero de Record de CDS: {len(cds_records)}")
 
