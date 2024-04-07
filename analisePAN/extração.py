@@ -95,5 +95,4 @@ for orthogroup in orthogroup_results:
         SeqIO.write(cds_records, cds_fasta, 'fasta')
         
 con.commit()
-con.close()
-
+con.close() 
