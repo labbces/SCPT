@@ -4,19 +4,25 @@ from Bio.SeqRecord import SeqRecord
 import sqlite3
 from Bio.Seq import Seq
 
-# Variavel para os caminhos 
-#I am commenting the folloing three lines as they are not being used.
-#seq_CDS = "/Storage/data1/hellen.silva/db-extraction/Orthogrups_CDS/{orthogroup}.cds.fa"
-#seq_OP = "/Storage/data1/hellen.silva/db-extraction/Orthogrups_Proteinas/{orthogroup}.fa"
-#orthogrups_tvs = "/Storage/data1/hellen.silva/db-extraction/arquivos_db/Orthogroups_for_longest_trans.tsv"
-
-
-minSeq4Commit = 10
-
 #Conectar com o banco de dado 
 db_file = "mybiosql.db"
 con = sqlite3.connect(db_file)
 cursor = con.cursor()
+
+#count orthogrupos to be processed
+count_selected_orthogroups_query = '''
+SELECT COUNT(A.orthogroup) FROM 
+(SELECT orthogroup
+FROM orthogrups
+GROUP BY orthogroup
+HAVING COUNT(id_protein) > 3) as A
+'''
+cursor.execute(count_selected_orthogroups_query)
+orthogroup_count = cursor.fetchall()
+
+print("Number of OrthogroupIDs with more than com mais de 3 seqs:")
+print(orthogroup_count)
+
 
 # Consulta para recuperar os grupos de ortólogos com mais de 4 sequências
 orthogroup_consulta = '''
@@ -24,7 +30,7 @@ SELECT orthogroup
 FROM orthogrups
 GROUP BY orthogroup
 HAVING COUNT(id_protein) > 3
-'''
+
 
 cursor.execute(orthogroup_consulta)
 orthogroup_results = cursor.fetchall()
@@ -53,16 +59,12 @@ for orthogroup in orthogroup_results:
 
     protein_records = []
 
-    countSeq =  0
 
     for result in protein_results:
         id_protein, sequence = result
         record = SeqRecord(Seq(sequence), id=str(id_protein), description=str(id_protein))
         protein_records.append(record)
-        countSeq +=1
-        #As we are not writing to the DB, we do not need to commit, so I am commenting the following two lines
-        #if countSeq % minSeq4Commit ==0: 
-        #     con.commit()
+
 
     #print(f"Numero de Record de Proteinas: {len(protein_records)}")  
 
@@ -83,17 +85,13 @@ for orthogroup in orthogroup_results:
 
     cds_records = []
 
-    countSeq =  0
 
     # SeqRecord para as sequências de CDS
     for result in cds_results:
         id_cds, sequence = result
         record = SeqRecord(Seq(sequence), id=str(id_cds), description=str(id_cds))
         cds_records.append(record)
-        countSeq +=1
-        #As we are not writing to the DB, we do not need to commit, so I am commenting the following two lines
-        #if countSeq % minSeq4Commit ==0:
-        #    con.commit()
+
 
     #print(f"Numero de Record de CDS: {len(cds_records)}")
 
