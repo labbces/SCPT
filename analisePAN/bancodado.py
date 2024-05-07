@@ -7,10 +7,12 @@ from BioSQL import BioSeqDatabase
 minSeq4Commit = 1000
 
 #Variavel dos arquivos
-seq_CDS = "/Storage/data1/hellen.silva/db-extraction/arquivos_db/all_CDS_idsok.fasta"
-seq_OP = "/Storage/data1/hellen.silva/db-extraction/arquivos_db/PanTranscriptome_2023.proteins.gz"
-orthogrups_tvs = "/Storage/data1/hellen.silva/db-extraction/arquivos_db/Orthogroups_for_longest_trans.tsv"
-
+seq_CDS = "=/Storage/data1/jorge.munoz/FILES_PANTRANSCRIPTOME/all_CDS_idsok.fasta"
+seq_OP = "/Storage/data1/jorge.munoz/FILES_PANTRANSCRIPTOME/PanTranscriptome_2023.proteins"
+orthogrups_tvs = "/Storage/data1/jorge.munoz/FILES_PANTRANSCRIPTOME/Orthogroups_panTABLE.tsv"
+# seq_CDS ="/home/hppp123/IC/teste/CDS.teste.fasta"
+# seq_OP ="/home/hppp123/IC/teste/proteinas.teste.fasta"
+# orthogrups_tvs ="/home/hppp123/IC/teste/orthogrupo.teste.fasta"
 
 # Variavel do banco de dados  
 

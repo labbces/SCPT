@@ -17,10 +17,10 @@ FROM orthogrups
 GROUP BY orthogroup
 HAVING COUNT(id_protein) > 3) as A
 '''
-cursor.execute(count_selected_orthogroups_query)
+#cursor.execute(count_selected_orthogroups_query)
 orthogroup_count = cursor.fetchall()
 
-print("Number of OrthogroupIDs with more than com mais de 3 seqs:")
+print("Number of OrthogroupIDs with more than 3 seqs:")
 print(orthogroup_count)
 
 
@@ -66,6 +66,7 @@ for orthogroup in orthogroup_results:
 
     # Escrever as sequências de proteínas no arquivo
     protein_file = f"/Storage/data1/hellen.silva/db-extraction/Orthogrups_Proteinas/{orthogroup}.fa"
+    #protein_file = f"/home/hppp123/IC/teste/OP/{orthogroup}.fa"
     with open(protein_file, 'w') as protein_fasta:
         SeqIO.write(protein_records, protein_fasta, 'fasta')
 
@@ -91,6 +92,7 @@ for orthogroup in orthogroup_results:
 
     # Escrever as sequências de CDS no arquivo
     cds_file = f"/Storage/data1/hellen.silva/db-extraction/Orthogrups_CDS/{orthogroup}.cds.fa"
+    #cds_file = f"/home/hppp123/IC/teste/CDS/{orthogroup}.cds.fa"
     with open(cds_file, 'w') as cds_fasta:
         SeqIO.write(cds_records, cds_fasta, 'fasta')
         
