@@ -33,8 +33,8 @@ Este primeiro script tem a finalidade de criar um banco de dados SQLite, definir
 
  - SQLite3
 - Bibliotecas Python:
-    * `Biopython` (para manipulação de sequências biológicas)
-    * `sqlite3`` (para interação com o banco de dados SQLite)
+    * Biopython (para manipulação de sequências biológicas)
+    * sqlite3 (para interação com o banco de dados SQLite)
 
 ## Execução do Script
 1. Criação do banco de dados e tabelas:
@@ -63,8 +63,8 @@ Este script extrai sequências de CDS e proteínas dos grupos ortológicos que p
 * BioSQL (para conectar ao banco de dados BioSQL)
 - Bibliotecas Python:
 
-    * `Biopython` (para manipulação de sequências biológicas)
-    * `sqlite3` (para interação com o banco de dados SQLite)
+    * Biopython (para manipulação de sequências biológicas)
+    * sqlite3 (para interação com o banco de dados SQLite)
 
 ## Execução do Script 
 
@@ -72,7 +72,7 @@ Este script extrai sequências de CDS e proteínas dos grupos ortológicos que p
 * O script se conecta ao banco de dados SQLite especificado `mybiosql.db`.
 2. Consulta ao banco de dados: 
 * O script executa duas consultas:
-    * `count_selected_orthogroups_query``: Conta o número de grupos de ortólogos que têm mais de 3 sequências.
+    * `count_selected_orthogroups_query`: Conta o número de grupos de ortólogos que têm mais de 3 sequências.
     * `orthogroup_consulta`: Recupera os IDs dos grupos de ortólogos que têm mais de 3 sequências.
 3. Processamento de Cada Grupo de Ortólogos
 * Para cada grupo de ortólogos encontrado na consulta anterior, o script extrai as sequências de proteínas e CDS associadas e então são armazenadas em adquivos FASTA separados.
