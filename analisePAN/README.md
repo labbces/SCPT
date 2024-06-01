@@ -62,7 +62,7 @@ Este script extrai sequências de CDS e proteínas dos grupos ortológicos que p
 ## Requisitos 
 * BioSQL (para conectar ao banco de dados BioSQL)
 - Bibliotecas Python:
-
+    * BioSQL (para conectar ao banco de dados BioSQL)
     * Biopython (para manipulação de sequências biológicas)
     * sqlite3 (para interação com o banco de dados SQLite)
 
