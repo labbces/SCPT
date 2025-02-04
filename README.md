@@ -13,6 +13,8 @@ Contact information:
 
 **Felipe Vaz Peres:** felipe.vzps@gmail.com
 
+**Hellen Regina Silvestre Silva:** hellen.gina46@gmail.com
+
 ### Data description
 * **MyAssembly_Template**
   * Template used to assembly transcriptomes from their raw RNAseq datasets.
